@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="js/helper.js"></script>
+
+        <title>Edit task name</title>
+    </head>
+    <body>
+        <h3>Write your new title below:</h3>
+        <form action='/edit'>
+            <input type='text' name='newTitle' id = 'titleBefore'>
+            <input type='submit' value='Submit'>
+            <input type='hidden' name='id' id = 'value'>
+        </form>
+    </body>
+</html>
