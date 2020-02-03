@@ -30,20 +30,19 @@ public class ToDoController {
         return getTodoList();
     }
 
-    @RequestMapping("/add")
+    @RequestMapping("/api/add")
     public void add(@RequestParam String newToDo, HttpServletResponse httpResponse) throws IOException {
         getTodoList().add(newToDo);
         saveAndRedirect(httpResponse);
     }
 
-    @RequestMapping("/delete" )
+    @RequestMapping("/api/delete" )
     public void delete(@RequestParam String id, HttpServletResponse httpResponse)  throws IOException {
         getTodoList().remove(Integer.parseInt(id));
         saveAndRedirect(httpResponse);
     }
 
-
-    @RequestMapping("/edit")
+    @RequestMapping("/api/edit")
     public void edit(@RequestParam String newTitle, @RequestParam String id, HttpServletResponse httpResponse) throws IOException {
         getTodoList().set(Integer.parseInt(id), newTitle);
         saveAndRedirect(httpResponse);

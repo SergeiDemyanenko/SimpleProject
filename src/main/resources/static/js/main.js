@@ -10,7 +10,7 @@ function addArrayToTable(array, table) {
 
         row.insertCell().textContent = i;
         row.insertCell().textContent = array[i];
-        addRedirectButton("/delete", i, "delete", row)
+        addRedirectButton("/api/delete", i, "delete", row)
         addRedirectButton("/edit_task.html", i, "edit", row )
 
     }
