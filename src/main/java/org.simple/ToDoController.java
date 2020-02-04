@@ -1,5 +1,6 @@
 package org.simple;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -7,6 +8,9 @@ import java.util.List;
 
 @RestController
 public class ToDoController {
+
+    @Autowired
+    DbUtil dbUtil;
 
     public static final String FILE_NAME = "filename.txt";
 
@@ -26,29 +30,33 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/list")
-    public List<String> index() throws IOException {
-        return getTodoList();
+    public List<Task> index() throws IOException {
+
+        return dbUtil.getAllTasks();
     }
 
     @RequestMapping("/api/add")
     public void add(@RequestParam String newToDo, HttpServletResponse httpResponse) throws IOException {
-        getTodoList().add(newToDo);
+        Task task = new Task();
+        task.name=newToDo;
+        dbUtil.saveOrUpdate(task);
         saveAndRedirect(httpResponse);
     }
 
     @RequestMapping("/api/delete" )
     public void delete(@RequestParam String id, HttpServletResponse httpResponse)  throws IOException {
-        getTodoList().remove(Integer.parseInt(id));
+        dbUtil.delete(Integer.parseInt(id));
         saveAndRedirect(httpResponse);
     }
 
     @RequestMapping("/api/edit")
     public void edit(@RequestParam String newTitle, @RequestParam String id, HttpServletResponse httpResponse) throws IOException {
-        getTodoList().set(Integer.parseInt(id), newTitle);
+        Task task = dbUtil.getTaskById(Integer.parseInt(id));
+        task.name=newTitle;
+        dbUtil.saveOrUpdate(task);
         saveAndRedirect(httpResponse);
     }
 }
-
 
 
 

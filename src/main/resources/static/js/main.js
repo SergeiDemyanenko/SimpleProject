@@ -8,10 +8,10 @@ function addArrayToTable(array, table) {
     for (let i = 0; i < array.length; i++) {
         let row = table.insertRow();
 
-        row.insertCell().textContent = i;
-        row.insertCell().textContent = array[i];
-        addRedirectButton("/api/delete", i, "delete", row)
-        addRedirectButton("/edit_task.html", i, "edit", row )
+        row.insertCell().textContent = array[i].id;
+        row.insertCell().textContent = array[i].name;
+        addRedirectButton("/api/delete", array[i].id, "delete", row)
+        addRedirectButton("/edit_task.html", array[i].id, "edit", row )
 
     }
 }

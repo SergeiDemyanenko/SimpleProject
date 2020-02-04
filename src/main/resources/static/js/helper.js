@@ -2,7 +2,7 @@ function setValueTitleBefore(data) {
     const url_string = window.location.href;
     const url = new URL(url_string);
     const c = url.searchParams.get("id");
-    document.getElementById("titleBefore").value = data[c];
+    document.getElementById("titleBefore").value = data[c-1].name;
 }
 
 function setValueId() {
