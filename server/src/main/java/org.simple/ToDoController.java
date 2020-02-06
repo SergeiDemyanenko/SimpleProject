@@ -3,10 +3,7 @@ package org.simple;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,10 +45,11 @@ public class ToDoController {
         saveAndRedirect(httpResponse);
     }
 
-    @RequestMapping("/api/delete" )
+    // delete record from DB
+    @RequestMapping("/api/delete")
     public void delete(@RequestParam String id, HttpServletResponse httpResponse) throws IOException, SQLException {
-        getTodoList().remove(Integer.parseInt(id));
-        saveAndRedirect(httpResponse);
+        SqlUtils.deleteRecord(id);
+        getTodoList();
     }
 
     @RequestMapping("/api/edit")
