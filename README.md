@@ -1,8 +1,7 @@
 # SimpleProject
 
-## For server:
-### Preparation:
-only for Mac or Linux run the next command:
-```bash
-$chmod +x server-start.sh mvnw
-```
+## Server side
+For running server-start script You should install maven at Your system.
+
+## Client side
+For running client-start script You should install node.js and npm at Your system.
