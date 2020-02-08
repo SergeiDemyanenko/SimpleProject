@@ -12,7 +12,6 @@ public class DataBaseUtils {
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM todo_list WHERE id = ?");
             stmt.setString(1,id);
             stmt.execute();
-            conn.close();
         } catch(Exception e) {
             System.out.println(e);
         }
