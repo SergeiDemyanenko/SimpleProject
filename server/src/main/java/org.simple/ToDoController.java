@@ -45,10 +45,10 @@ public class ToDoController {
         saveAndRedirect(httpResponse);
     }
 
-    // delete record from DB
     @RequestMapping("/api/delete")
     public void delete(@RequestParam String id, HttpServletResponse httpResponse) throws IOException, SQLException {
-        SqlUtils.deleteRecord(id);
+        // delete record from DB
+        DataBaseUtils.deleteRecord(id);
         getTodoList();
     }
 

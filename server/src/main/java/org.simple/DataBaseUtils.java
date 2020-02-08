@@ -3,20 +3,19 @@ package org.simple;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-public class SqlUtils {
-
-    // delete record from the table
+public class DataBaseUtils {
 
     public static void deleteRecord(String id) {
+        // delete record from the table
         try {
             Connection conn = DataBase.getConnect();
             PreparedStatement stmt = conn.prepareStatement("DELETE FROM todo_list WHERE id = ?");
             stmt.setString(1,id);
-            stmt.executeUpdate();
+            stmt.execute();
+            conn.close();
         } catch(Exception e) {
             System.out.println(e);
         }
-
     }
 
 }
