@@ -59,6 +59,12 @@ public class ToDoController {
         getTodoList().set(Integer.parseInt(id), newTitle);
         saveAndRedirect(httpResponse);
     }
+
+    @RequestMapping("/api/hello")
+    public String hello() {
+            return "hello";
+
+    }
 }
 
 
