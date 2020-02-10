@@ -30,6 +30,11 @@ public class ToDoController {
     public void edit(@RequestParam String newTitle, @RequestParam String id, HttpServletResponse httpResponse) throws IOException, SQLException {
         DataBaseUtils.getTodoList().set(Integer.parseInt(id), newTitle);
     }
+
+    @RequestMapping("/api/hello")
+    public String hello() {
+            return "hello";
+    }
 }
 
 
