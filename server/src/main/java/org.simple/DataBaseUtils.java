@@ -59,4 +59,11 @@ public class DataBaseUtils {
         stmt.setString(1,id);
         stmt.execute();
     }
+
+    public static void addNewNote (String newNote) throws SQLException {
+        Connection conn = getConnect();
+        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO TODO_LIST (text) VALUES (?)");
+        pstmt.setString(1, newNote );
+        pstmt.executeUpdate();
+    }
 }
