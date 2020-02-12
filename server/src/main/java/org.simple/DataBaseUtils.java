@@ -60,11 +60,10 @@ public class DataBaseUtils {
         stmt.execute();
     }
 
-    public static void editRecord(String id, String newTitle) throws SQLException {
+    public static void editRecord(String id, String text) throws SQLException {
         Connection conn = getConnect();
         PreparedStatement stmt = conn.prepareStatement("UPDATE todo_list SET text = ? WHERE id = ?");
-        stmt.setString(1, newTitle);
-        id = (Integer.parseInt(id) + 1) + "";
+        stmt.setString(1, text);
         stmt.setString(2, id);
         stmt.execute();
     }
