@@ -7,6 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.UUID;
 
 public class DataBaseUtils {
 
@@ -69,9 +70,11 @@ public class DataBaseUtils {
     }
 
     public static void addNewNote (String text) throws SQLException {
+        UUID _id = UUID.randomUUID();
         Connection conn = getConnect();
-        PreparedStatement pstmt = conn.prepareStatement("INSERT INTO TODO_LIST (text) VALUES (?)");
-        pstmt.setString(1, text);
-        pstmt.executeUpdate();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO TODO_LIST (text) VALUES (?,?)");
+        stmt.setString(1, text);
+        stmt.setString(2, _id.toString());
+        stmt.executeUpdate();
     }
 }
