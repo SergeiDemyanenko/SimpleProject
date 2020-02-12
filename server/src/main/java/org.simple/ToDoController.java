@@ -27,8 +27,8 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/edit")
-    public void edit(@RequestParam String newTitle, @RequestParam String id, HttpServletResponse httpResponse) throws IOException, SQLException {
-        DataBaseUtils.getTodoList().set(Integer.parseInt(id), newTitle);
+    public void edit(@RequestParam String newTitle, @RequestParam int id, HttpServletResponse httpResponse) throws IOException, SQLException {
+        DataBaseUtils.editRecord(id, newTitle);
     }
 
     @RequestMapping("/api/hello")
