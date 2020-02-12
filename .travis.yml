@@ -1,6 +1,5 @@
 language: java
-jdk:
-- oraclejdk8
-dist: trusty
+jdk: oraclejdk8
+dist: xenial
 sudo: false
 script: "mvn test --file server"
