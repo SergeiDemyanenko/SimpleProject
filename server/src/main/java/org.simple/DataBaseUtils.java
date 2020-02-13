@@ -86,4 +86,12 @@ public class DataBaseUtils {
         stmt.setInt(2, id);
         stmt.execute();
     }
+
+    public static void editRecord(int id, String text) throws SQLException {
+        Connection conn = getConnect();
+        PreparedStatement stmt = conn.prepareStatement("UPDATE todo_list SET text = ? WHERE id = ?");
+        stmt.setString(1, text);
+        stmt.setInt(2, id);
+        stmt.execute();
+    }
 }
