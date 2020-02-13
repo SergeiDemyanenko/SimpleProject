@@ -68,7 +68,7 @@ public class DataBaseUtils {
         stmt.execute();
     }
 
-    public static void addNewNote (String text) throws SQLException {
+    public static void addNewNote(String text) throws SQLException {
         Connection conn = getConnect();
         String insert = "INSERT INTO TODO_LIST (text) VALUES (?)";
         PreparedStatement stmt = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
