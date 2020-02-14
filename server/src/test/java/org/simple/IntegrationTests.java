@@ -2,6 +2,7 @@ package org.simple;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -16,6 +17,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.sql.*;
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -41,6 +44,24 @@ public class IntegrationTests {
             HttpEntity entity = response.getEntity();
             assertNotNull("response is null", entity);
             assertEquals("hello", EntityUtils.toString(entity));
+        }
+    }
+
+    @Test
+    public void addTest() throws SQLException, IOException, ClientProtocolException {
+        HttpGet request = new HttpGet(String.format("http://localhost:%d/api/add?newToDo=TestString", randomServerPort));
+        try (CloseableHttpResponse response = httpClient.execute(request)) {
+
+            assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+
+            ArrayList<String> todoList = new ArrayList<>();
+            Connection conn = DataBaseUtils.getConnect();
+            Statement sql_stmt = conn.createStatement();
+            ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM TODO_LIST");
+            while (rset.next()) {
+                todoList.add(rset.getString("text"));
+            }
+            assertEquals("TestString", todoList.get(todoList.size() - 1));
         }
     }
 }
