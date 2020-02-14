@@ -2,7 +2,6 @@ package org.simple;
 
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
 import java.sql.*;
 import java.util.List;
 
@@ -10,30 +9,34 @@ import java.util.List;
 public class ToDoController {
 
     @RequestMapping("/api/list")
-    public List<String> index() throws IOException, SQLException {
+    public List<String> index() throws SQLException {
         return DataBaseUtils.getTodoList();
     }
 
     @RequestMapping("/api/add")
-    public void add(@RequestParam String newToDo, HttpServletResponse httpResponse) throws IOException, SQLException {
+    public void add(@RequestParam String newToDo, HttpServletResponse httpResponse) throws SQLException {
         DataBaseUtils.getTodoList().add(newToDo);
         //saveAndRedirect(httpResponse);
     }
 
     @RequestMapping("/api/delete")
-    public void delete(@RequestParam String id, HttpServletResponse httpResponse) throws IOException, SQLException {
+    public void delete(@RequestParam String id, HttpServletResponse httpResponse) throws SQLException {
         DataBaseUtils.deleteRecord(id);
-        DataBaseUtils.getTodoList();
     }
 
     @RequestMapping("/api/edit")
-    public void edit(@RequestParam String newTitle, @RequestParam int id, HttpServletResponse httpResponse) throws IOException, SQLException {
+    public void edit(@RequestParam String newTitle, @RequestParam int id, HttpServletResponse httpResponse) throws SQLException {
         DataBaseUtils.editRecord(id, newTitle);
     }
 
     @RequestMapping("/api/hello")
     public String hello() {
             return "hello";
+    }
+
+    @RequestMapping("/api/list-it")
+    public List<ToDoItem> indexIT() throws SQLException {
+        return DataBaseUtils.getTodoListIT();
     }
 }
 

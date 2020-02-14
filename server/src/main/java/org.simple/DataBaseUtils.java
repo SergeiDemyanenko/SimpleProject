@@ -14,6 +14,8 @@ public class DataBaseUtils {
 
     private static List<String> todoList = null;
 
+    private static List<ToDoItem> todoListIT = null;
+
     private static Properties getProps() {
         Properties result = new Properties();
         URL url = DataBaseUtils.class.getClassLoader().getResource("application.properties");
@@ -66,5 +68,20 @@ public class DataBaseUtils {
         stmt.setString(1, text);
         stmt.setInt(2, id);
         stmt.execute();
+    }
+
+    public static List<ToDoItem> getTodoListIT() throws SQLException {
+        if (todoListIT == null) {
+            todoListIT = new ArrayList<>();
+
+            Connection conn = getConnect();
+            Statement sql_stmt = conn.createStatement();
+            ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM todo_list");
+            while (rset.next()) {
+                todoListIT.add(new ToDoItem(rset.getInt("id"), rset.getString("text")));
+            }
+        }
+
+        return todoListIT;
     }
 }
