@@ -12,8 +12,6 @@ public class DataBaseUtils {
 
     private static Connection CONNECTION_INSTANCE = null;
 
-    private static List<ToDoItem> todoListIT = null;
-
     private static Properties getProps() {
         Properties result = new Properties();
         URL url = DataBaseUtils.class.getClassLoader().getResource("application.properties");
@@ -39,7 +37,7 @@ public class DataBaseUtils {
     }
 
     public static List<ToDoItem> getTodoListIT() throws SQLException {
-        todoListIT = new ArrayList<>();
+        List<ToDoItem> todoListIT = new ArrayList<>();
 
         Connection conn = getConnect();
         Statement sql_stmt = conn.createStatement();
