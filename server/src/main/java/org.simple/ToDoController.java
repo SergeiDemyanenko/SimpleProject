@@ -16,8 +16,7 @@ public class ToDoController {
 
     @RequestMapping("/api/add")
     public void add(@RequestParam String newToDo, HttpServletResponse httpResponse) throws IOException, SQLException {
-        DataBaseUtils.getTodoList().add(newToDo);
-        //saveAndRedirect(httpResponse);
+        DataBaseUtils.addNewNote(newToDo);
     }
 
     @RequestMapping("/api/delete")

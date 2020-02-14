@@ -67,4 +67,20 @@ public class DataBaseUtils {
         stmt.setInt(2, id);
         stmt.execute();
     }
+
+    public static void addNewNote(String text) throws SQLException {
+        Connection conn = getConnect();
+        String insert = "INSERT INTO TODO_LIST (text) VALUES (?)";
+        PreparedStatement stmt = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
+        stmt.setString(1, text);
+        stmt.executeUpdate();
+
+        ResultSet rs = stmt.getGeneratedKeys();
+        int generatedKey = 0;
+        if (rs.next()) {
+            generatedKey = rs.getInt(1);
+        }
+
+        System.out.println("Inserted ToDoItem's ID: " + generatedKey);
+    }
 }
