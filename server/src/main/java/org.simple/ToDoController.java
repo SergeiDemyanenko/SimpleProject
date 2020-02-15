@@ -9,6 +9,11 @@ import java.util.List;
 @RestController
 public class ToDoController {
 
+    @RequestMapping("/api/list-it")
+    public List<ToDoItem> indexIT() throws SQLException {
+        return DataBaseUtils.getTodoListIT();
+    }
+
     @RequestMapping("/api/list")
     public List<String> index() throws IOException, SQLException {
         return DataBaseUtils.getTodoList();
@@ -22,7 +27,7 @@ public class ToDoController {
     @RequestMapping("/api/delete")
     public void delete(@RequestParam String id, HttpServletResponse httpResponse) throws IOException, SQLException {
         DataBaseUtils.deleteRecord(id);
-        DataBaseUtils.getTodoList();
+        //DataBaseUtils.getTodoList();
     }
 
     @RequestMapping("/api/edit")
@@ -35,7 +40,3 @@ public class ToDoController {
             return "hello";
     }
 }
-
-
-
-

@@ -12,8 +12,6 @@ public class DataBaseUtils {
 
     private static Connection CONNECTION_INSTANCE = null;
 
-    private static List<String> todoList = null;
-
     private static Properties getProps() {
         Properties result = new Properties();
         URL url = DataBaseUtils.class.getClassLoader().getResource("application.properties");
@@ -38,19 +36,27 @@ public class DataBaseUtils {
         return CONNECTION_INSTANCE;
     }
 
-    public static List<String> getTodoList() throws SQLException {
-        if (todoList == null) {
-            todoList = new ArrayList<>();
+    public static List<ToDoItem> getTodoListIT() throws SQLException {
+        List<ToDoItem> todoListIT = new ArrayList<>();
 
-            Connection conn = getConnect();
-            Statement sql_stmt = conn.createStatement();
-            ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM todo_list");
-            while (rset.next()) {
-                todoList.add(rset.getString("text"));
-            }
+        Connection conn = getConnect();
+        Statement sql_stmt = conn.createStatement();
+        ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM todo_list");
+        while (rset.next()) {
+            todoListIT.add(new ToDoItem(rset.getInt("id"), rset.getString("text")));
         }
 
-        return todoList;
+        return todoListIT;
+    }
+
+    public static List<String> getTodoList() throws SQLException {
+        List<String> todoList = new ArrayList<>();
+
+       for (ToDoItem item : getTodoListIT()) {
+           todoList.add(item.getText());
+       }
+
+       return todoList;
     }
 
     public static void deleteRecord(String id) throws SQLException {

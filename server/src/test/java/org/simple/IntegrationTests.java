@@ -43,4 +43,17 @@ public class IntegrationTests {
             assertEquals("hello", EntityUtils.toString(entity));
         }
     }
+
+    @Test
+    public void helloApiListITTest() throws IOException {
+        HttpGet request = new HttpGet(String.format("http://localhost:%d/api/list-it", randomServerPort));
+        try (CloseableHttpResponse response = httpClient.execute(request)) {
+
+            assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+
+            HttpEntity entity = response.getEntity();
+            assertNotNull("response is null", entity);
+            assertEquals("[{\"id\":1,\"text\":\"go to\"},{\"id\":2,\"text\":\"do something\"},{\"id\":3,\"text\":\"look at it\"}]", EntityUtils.toString(entity));
+        }
+    }
 }
