@@ -1,38 +1,35 @@
 package org.simple;
 
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
 import java.sql.*;
 import java.util.List;
 
 @RestController
 public class ToDoController {
 
-    @RequestMapping("/api/list-it")
-    public List<ToDoItem> indexIT() throws SQLException {
+    @RequestMapping("/api/list-obj")
+    public List<ToDoItem> listObj() throws SQLException {
         return DataBaseUtils.getTodoListIT();
     }
 
     @RequestMapping("/api/list")
-    public List<String> index() throws IOException, SQLException {
+    public List<String> list() throws SQLException {
         return DataBaseUtils.getTodoList();
     }
 
     @RequestMapping("/api/add")
-    public void add(@RequestParam String newToDo, HttpServletResponse httpResponse) throws IOException, SQLException {
-        DataBaseUtils.addNewNote(newToDo);
+    public int add(@RequestParam String text) throws SQLException {
+        return DataBaseUtils.addRecord(text);
     }
 
     @RequestMapping("/api/delete")
-    public void delete(@RequestParam String id, HttpServletResponse httpResponse) throws IOException, SQLException {
+    public void delete(@RequestParam int id) throws SQLException {
         DataBaseUtils.deleteRecord(id);
-        //DataBaseUtils.getTodoList();
     }
 
     @RequestMapping("/api/edit")
-    public void edit(@RequestParam String newTitle, @RequestParam int id, HttpServletResponse httpResponse) throws IOException, SQLException {
-        DataBaseUtils.editRecord(id, newTitle);
+    public void edit(@RequestParam String text, @RequestParam int id) throws SQLException {
+        DataBaseUtils.editRecord(id, text);
     }
 
     @RequestMapping("/api/hello")

@@ -13,7 +13,7 @@ public class ToDoItem {
         this.text = text;
     }
 
-    public int getID() {
+    public int getId() {
         return id;
     }
 

@@ -59,10 +59,10 @@ public class DataBaseUtils {
        return todoList;
     }
 
-    public static void deleteRecord(String id) throws SQLException {
+    public static void deleteRecord(int id) throws SQLException {
         Connection conn = getConnect();
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM todo_list WHERE id = ?");
-        stmt.setString(1,id);
+        stmt.setInt(1, id);
         stmt.execute();
     }
 
@@ -74,7 +74,7 @@ public class DataBaseUtils {
         stmt.execute();
     }
 
-    public static void addNewNote(String text) throws SQLException {
+    public static int addRecord(String text) throws SQLException {
         Connection conn = getConnect();
         String insert = "INSERT INTO TODO_LIST (text) VALUES (?)";
         PreparedStatement stmt = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
@@ -82,11 +82,10 @@ public class DataBaseUtils {
         stmt.executeUpdate();
 
         ResultSet rs = stmt.getGeneratedKeys();
-        int generatedKey = 0;
         if (rs.next()) {
-            generatedKey = rs.getInt(1);
+            return rs.getInt(1);
+        } else {
+            throw new SQLException("can not get id for new record");
         }
-
-        System.out.println("Inserted ToDoItem's ID: " + generatedKey);
     }
 }
