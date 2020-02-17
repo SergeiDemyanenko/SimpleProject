@@ -48,7 +48,7 @@ public class IntegrationTests {
     }
 
     @Test
-    public void addToDBTest() throws SQLException, IOException, ClientProtocolException {
+    public void addToDBTest() throws SQLException, IOException {
         final String TEST_VALUE = "TestString";
         HttpGet request = new HttpGet(String.format("http://localhost:%d/api/add?newToDo=%s", randomServerPort, TEST_VALUE));
         try (CloseableHttpResponse response = httpClient.execute(request)) {
