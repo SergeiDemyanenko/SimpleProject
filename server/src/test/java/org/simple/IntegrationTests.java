@@ -51,6 +51,7 @@ public class IntegrationTests {
     public void addToDBTest() throws SQLException, IOException {
         final String TEST_VALUE = "TestString";
         HttpGet request = new HttpGet(String.format("http://localhost:%d/api/add?newToDo=%s", randomServerPort, TEST_VALUE));
+        System.out.println(request.toString());
         try (CloseableHttpResponse response = httpClient.execute(request)) {
 
             assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
