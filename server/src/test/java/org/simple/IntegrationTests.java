@@ -48,20 +48,23 @@ public class IntegrationTests {
     }
 
     @Test
-    public void addTest() throws SQLException, IOException, ClientProtocolException {
-        HttpGet request = new HttpGet(String.format("http://localhost:%d/api/add?newToDo=TestString", randomServerPort));
+    public void addToDBTest() throws SQLException, IOException, ClientProtocolException {
+        final String TEST_VALUE = "TestString";
+        HttpGet request = new HttpGet(String.format("http://localhost:%d/api/add?newToDo=%s", randomServerPort, TEST_VALUE));
         try (CloseableHttpResponse response = httpClient.execute(request)) {
+
 
             assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
 
             ArrayList<String> todoList = new ArrayList<>();
             Connection conn = DataBaseUtils.getConnect();
             Statement sql_stmt = conn.createStatement();
-            ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM TODO_LIST");
+            ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM TODO_LIST WHERE text = 'TestString'");
             while (rset.next()) {
                 todoList.add(rset.getString("text"));
             }
-            assertEquals("TestString", todoList.get(todoList.size() - 1));
+            assertEquals(todoList.size(), 1);
+            assertEquals(TEST_VALUE, todoList.get(todoList.size() - 1));
         }
     }
 }
