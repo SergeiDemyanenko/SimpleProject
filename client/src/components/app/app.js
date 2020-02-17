@@ -23,7 +23,7 @@ export default class App extends Component {
   }
 
   onItemAdded = (label) => {
-    axios.get(`/api/add?newToDo=${label}`);
+    axios.get(`/api/add?text=${label}`);
     this.setState((state) => {
       const item = this.createItem(label);
       return { items: [...state.items, item] };
@@ -31,7 +31,7 @@ export default class App extends Component {
   };
 
   onItemEdited = ( id, label) => {
-    axios.get(`/api/edit?newTitle=${label}&id=${id}`);
+    axios.get(`/api/edit?text=${label}&id=${id}`);
     this.setState((state) => {
       const items = state.items.map((item) => {
         if(item.id === id){
