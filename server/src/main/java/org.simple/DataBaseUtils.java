@@ -12,8 +12,6 @@ public class DataBaseUtils {
 
     private static Connection CONNECTION_INSTANCE = null;
 
-    private static List<String> todoList = null;
-
     private static Properties getProps() {
         Properties result = new Properties();
         URL url = DataBaseUtils.class.getClassLoader().getResource("application.properties");
@@ -38,25 +36,33 @@ public class DataBaseUtils {
         return CONNECTION_INSTANCE;
     }
 
-    public static List<String> getTodoList() throws SQLException {
-        if (todoList == null) {
-            todoList = new ArrayList<>();
+    public static List<ToDoItem> getTodoListIT() throws SQLException {
+        List<ToDoItem> todoListIT = new ArrayList<>();
 
-            Connection conn = getConnect();
-            Statement sql_stmt = conn.createStatement();
-            ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM todo_list");
-            while (rset.next()) {
-                todoList.add(rset.getString("text"));
-            }
+        Connection conn = getConnect();
+        Statement sql_stmt = conn.createStatement();
+        ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM todo_list");
+        while (rset.next()) {
+            todoListIT.add(new ToDoItem(rset.getInt("id"), rset.getString("text")));
         }
 
-        return todoList;
+        return todoListIT;
     }
 
-    public static void deleteRecord(String id) throws SQLException {
+    public static List<String> getTodoList() throws SQLException {
+        List<String> todoList = new ArrayList<>();
+
+       for (ToDoItem item : getTodoListIT()) {
+           todoList.add(item.getText());
+       }
+
+       return todoList;
+    }
+
+    public static void deleteRecord(int id) throws SQLException {
         Connection conn = getConnect();
         PreparedStatement stmt = conn.prepareStatement("DELETE FROM todo_list WHERE id = ?");
-        stmt.setString(1,id);
+        stmt.setInt(1, id);
         stmt.execute();
     }
 
@@ -68,7 +74,7 @@ public class DataBaseUtils {
         stmt.execute();
     }
 
-    public static void addNewNote(String text) throws SQLException {
+    public static int addRecord(String text) throws SQLException {
         Connection conn = getConnect();
         String insert = "INSERT INTO TODO_LIST (text) VALUES (?)";
         PreparedStatement stmt = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
@@ -76,11 +82,10 @@ public class DataBaseUtils {
         stmt.executeUpdate();
 
         ResultSet rs = stmt.getGeneratedKeys();
-        int generatedKey = 0;
         if (rs.next()) {
-            generatedKey = rs.getInt(1);
+            return rs.getInt(1);
+        } else {
+            throw new SQLException("can not get id for new record");
         }
-
-        System.out.println("Inserted ToDoItem's ID: " + generatedKey);
     }
 }

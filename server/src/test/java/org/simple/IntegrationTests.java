@@ -34,17 +34,30 @@ public class IntegrationTests {
 
     private CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    @Test
-    public void helloTest() throws IOException {
-        HttpGet request = new HttpGet(String.format("http://localhost:%d/api/hello", randomServerPort));
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+    private String getResponse(String uri) throws IOException {
+        String result;
 
+        HttpGet request = new HttpGet(String.format("http://localhost:%d%s", randomServerPort, uri));
+        try (CloseableHttpResponse response = httpClient.execute(request)) {
             assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
 
             HttpEntity entity = response.getEntity();
             assertNotNull("response is null", entity);
-            assertEquals("hello", EntityUtils.toString(entity));
+            result = EntityUtils.toString(entity);
         }
+
+        return result;
+    }
+
+    @Test
+    public void helloTest() throws IOException {
+        assertEquals("hello", getResponse("/api/hello"));
+    }
+
+    @Test
+    public void listTest() throws IOException {
+        assertEquals("[{\"id\":1,\"text\":\"go to\"},{\"id\":2,\"text\":\"do something\"}," +
+                "{\"id\":3,\"text\":\"look at it\"}]", getResponse("/api/list-obj"));
     }
 
     @Test
