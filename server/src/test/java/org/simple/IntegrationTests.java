@@ -53,7 +53,6 @@ public class IntegrationTests {
         HttpGet request = new HttpGet(String.format("http://localhost:%d/api/add?newToDo=%s", randomServerPort, TEST_VALUE));
         try (CloseableHttpResponse response = httpClient.execute(request)) {
 
-
             assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
 
             ArrayList<String> todoList = new ArrayList<>();
