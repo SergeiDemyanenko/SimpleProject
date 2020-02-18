@@ -2,23 +2,19 @@ package org.simple;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -26,6 +22,7 @@ import static org.junit.Assert.*;
 @SpringBootTest(
         classes = Application.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+
 public class IntegrationTests {
 
     @LocalServerPort
@@ -71,5 +68,9 @@ public class IntegrationTests {
 
         assertTrue("There is not records in SQL", rset.next());
         assertEquals(TEST_VALUE, rset.getString(1));
+
+        stmt = conn.prepareStatement("DELETE FROM todo_list WHERE text = ?");
+        stmt.setString(1, TEST_VALUE);
+        stmt.execute();
     }
 }
