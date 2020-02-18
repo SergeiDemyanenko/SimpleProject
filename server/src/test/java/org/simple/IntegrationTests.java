@@ -9,6 +9,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.jupiter.api.Order;
 import org.junit.runner.RunWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +17,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -47,13 +49,23 @@ public class IntegrationTests {
     }
 
     @Test
+    @Order(1)
     public void helloTest() throws IOException {
         assertEquals("hello", getResponse("/api/hello"));
     }
 
     @Test
+    @Order(2)
     public void listTest() throws IOException {
         assertEquals("[{\"id\":1,\"text\":\"go to\"},{\"id\":2,\"text\":\"do something\"}," +
+                "{\"id\":3,\"text\":\"look at it\"}]", getResponse("/api/list-obj"));
+    }
+
+    @Test
+    @Order(3)
+    public void deleteTest() throws IOException, SQLException {
+        DataBaseUtils.deleteRecord(2);
+        assertEquals("[{\"id\":1,\"text\":\"go to\"}," +
                 "{\"id\":3,\"text\":\"look at it\"}]", getResponse("/api/list-obj"));
     }
 }
