@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -62,22 +61,15 @@ public class IntegrationTests {
 
     @Test
     public void addToDBTest() throws SQLException, IOException {
-        final String TEST_VALUE = "TestString";
-        HttpGet request = new HttpGet(String.format("http://localhost:%d/api/add?newToDo=%s", randomServerPort, TEST_VALUE));
-        System.out.println(request.toString());
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
+        final String TEST_VALUE = "Test_Add_To_Db_Value";
+        getResponse(String.format("/api/add?text=%s", TEST_VALUE));
 
-            assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+        Connection conn = DataBaseUtils.getConnect();
+        PreparedStatement stmt = conn.prepareStatement("SELECT text FROM TODO_LIST WHERE text = ?");
+        stmt.setString(1, TEST_VALUE);
+        ResultSet rset = stmt.executeQuery();
 
-            ArrayList<String> todoList = new ArrayList<>();
-            Connection conn = DataBaseUtils.getConnect();
-            Statement sql_stmt = conn.createStatement();
-            ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM TODO_LIST WHERE text = 'TestString'");
-            while (rset.next()) {
-                todoList.add(rset.getString("text"));
-            }
-            assertEquals(todoList.size(), 1);
-            assertEquals(TEST_VALUE, todoList.get(todoList.size() - 1));
-        }
+        assertTrue("There is not records in SQL", rset.next());
+        assertEquals(TEST_VALUE, rset.getString(1));
     }
 }
