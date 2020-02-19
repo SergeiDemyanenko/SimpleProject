@@ -17,10 +17,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
+import java.sql.*;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertNotNull;
+import static org.springframework.test.util.AssertionErrors.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
@@ -68,5 +69,21 @@ public class IntegrationTests {
         DataBaseUtils.deleteRecord(2);
         assertEquals("[{\"id\":1,\"text\":\"go to\"}," +
                 "{\"id\":3,\"text\":\"look at it\"}]", getResponse("/api/list-obj"));
+    }
+
+    @Test
+    @Order(4)
+    public void addToDBTest() throws SQLException, IOException {
+        final String TEST_VALUE = "Test_Add_To_Db_Value";
+        getResponse(String.format("/api/add?text=%s", TEST_VALUE));
+
+        Connection conn = DataBaseUtils.getConnect();
+        PreparedStatement stmt = conn.prepareStatement("SELECT text FROM TODO_LIST WHERE text = ?");
+        stmt.setString(1, TEST_VALUE);
+        ResultSet rset = stmt.executeQuery();
+
+        assertTrue(String.format("There is not records with text = %s in SQL database", TEST_VALUE) , rset.next());
+        assertEquals(TEST_VALUE, rset.getString(1));
+        assertFalse(String.format("There is more then one record with text = %s in SQL database", TEST_VALUE), rset.next());
     }
 }
