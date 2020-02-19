@@ -82,8 +82,8 @@ public class IntegrationTests {
         stmt.setString(1, TEST_VALUE);
         ResultSet rset = stmt.executeQuery();
 
-        assertTrue("There is not records in SQL", rset.next());
+        assertTrue(String.format("There is not records with text = %s in SQL database", TEST_VALUE) , rset.next());
         assertEquals(TEST_VALUE, rset.getString(1));
-        assertFalse(String.format("There is more then one record with text = %s,", TEST_VALUE), rset.next());
+        assertFalse(String.format("There is more then one record with text = %s in SQL database", TEST_VALUE), rset.next());
     }
 }
