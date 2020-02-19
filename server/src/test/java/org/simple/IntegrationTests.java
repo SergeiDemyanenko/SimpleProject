@@ -25,7 +25,6 @@ import static org.junit.Assert.*;
 @SpringBootTest(
         classes = Application.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-
 public class IntegrationTests {
 
     @LocalServerPort
@@ -62,6 +61,15 @@ public class IntegrationTests {
     }
 
     @Test
+    @Order(3)
+    public void deleteTest() throws IOException, SQLException {
+        DataBaseUtils.deleteRecord(2);
+        assertEquals("[{\"id\":1,\"text\":\"go to\"}," +
+                "{\"id\":3,\"text\":\"look at it\"}]", getResponse("/api/list-obj"));
+    }
+
+    @Test
+    @Order(4)
     public void addToDBTest() throws SQLException, IOException {
         final String TEST_VALUE = "Test_Add_To_Db_Value";
         getResponse(String.format("/api/add?text=%s", TEST_VALUE));
@@ -73,17 +81,6 @@ public class IntegrationTests {
 
         assertTrue("There is not records in SQL", rset.next());
         assertEquals(TEST_VALUE, rset.getString(1));
-
-        stmt = conn.prepareStatement("DELETE FROM todo_list WHERE text = ?");
-        stmt.setString(1, TEST_VALUE);
-        stmt.execute();
-    }
-    
-    @Test
-    @Order(3)
-    public void deleteTest() throws IOException, SQLException {
-        DataBaseUtils.deleteRecord(2);
-        assertEquals("[{\"id\":1,\"text\":\"go to\"}," +
-                "{\"id\":3,\"text\":\"look at it\"}]", getResponse("/api/list-obj"));
+        assertFalse(String.format("There is more then one record with text = %s,", TEST_VALUE), rset.next());
     }
 }
