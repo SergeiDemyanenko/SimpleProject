@@ -21,7 +21,7 @@ import java.sql.*;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.util.AssertionErrors.assertNotNull;
+import static org.springframework.test.util.AssertionErrors.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(
