@@ -9,7 +9,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
@@ -18,8 +20,6 @@ public class UITest {
 
     @Test
     public void addTest() {
-        System.setProperty("webdriver.chrome.driver", "/Users/sdemyanenko/Projects/chromedriver");
-
         WebDriver driver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, 5);
         try {
@@ -32,6 +32,25 @@ public class UITest {
 
             List<WebElement> labelList = wait.until(presenceOfAllElementsLocatedBy(By.className("todo-list-item-label")));
             assertTrue("added string not found", labelList.stream().anyMatch(e -> TEST_VALUE.equals(e.getText())));
+        } finally {
+            driver.close();
+        }
+    }
+
+    @Test
+    public void deleteTest() throws InterruptedException {
+        WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, 5);
+        try {
+            driver.get("http://localhost:3000/");
+
+            List<WebElement> todoList = wait.until(presenceOfAllElementsLocatedBy(By.xpath("//span[@class='todo-list-item']")));
+            assertTrue("There are nothing to delete in the List",todoList.size() > 0);
+
+            todoList.get(0).findElement(By.xpath("//i[@class='fa fa-trash-o']")).click();
+            List<WebElement> newTodoList = wait.until(presenceOfAllElementsLocatedBy(By.xpath("//span[@class='todo-list-item']")));
+
+            assertEquals(todoList.size() - 1, newTodoList.size());
         } finally {
             driver.close();
         }
