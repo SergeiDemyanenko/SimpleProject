@@ -44,12 +44,10 @@ public class UITest {
         try {
             driver.get("http://localhost:3000/");
 
-            By deleteButton = By.xpath("//i[@class='fa fa-trash-o']");
-
             List<WebElement> todoList = wait.until(presenceOfAllElementsLocatedBy(By.xpath("//span[@class='todo-list-item']")));
             assertTrue("There are nothing to delete in the List",todoList.size() > 0);
 
-            todoList.get(todoList.size() - 1).findElement(deleteButton).click();
+            todoList.get(0).findElement(By.xpath("//i[@class='fa fa-trash-o']")).click();
             List<WebElement> newTodoList = wait.until(presenceOfAllElementsLocatedBy(By.xpath("//span[@class='todo-list-item']")));
 
             assertEquals(todoList.size() - 1, newTodoList.size());
