@@ -86,4 +86,12 @@ public class IntegrationTests {
         assertEquals(TEST_VALUE, rset.getString(1));
         assertFalse(String.format("There is more then one record with text = %s in SQL database", TEST_VALUE), rset.next());
     }
+
+    @Test
+    @Order(5)
+    public void editTest() throws IOException, SQLException {
+        DataBaseUtils.editRecord(3,"do not look at it");
+        assertEquals("[{\"id\":1,\"text\":\"go to\"},{\"id\":3,\"text\":\"do not look at it\"}," +
+                "{\"id\":4,\"text\":\"Test_Add_To_Db_Value\"}]", getResponse("/api/list-obj"));
+    }
 }
