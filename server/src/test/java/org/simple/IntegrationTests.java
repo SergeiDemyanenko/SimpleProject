@@ -86,4 +86,28 @@ public class IntegrationTests {
         assertEquals(TEST_VALUE, rset.getString(1));
         assertFalse(String.format("There is more then one record with text = %s in SQL database", TEST_VALUE), rset.next());
     }
+
+    @Test
+    @Order(5)
+    public void editTest() throws IOException, SQLException {
+        int TEST_ID = 0;
+        String NEW_VALUE = "do_not_look_at_it";
+
+        Connection conn0 = DataBaseUtils.getConnect();
+        PreparedStatement stmt0 = conn0.prepareStatement("SELECT MAX(id) FROM TODO_LIST");
+        ResultSet rset0 = stmt0.executeQuery();
+        if (rset0.next()) {
+            TEST_ID = rset0.getInt(1);
+        }
+
+        getResponse(String.format("/api/edit?id=%d&text=%s", TEST_ID, NEW_VALUE));
+
+        PreparedStatement stmt1 = conn0.prepareStatement("SELECT text FROM TODO_LIST WHERE text = ?");
+        stmt1.setString(1, NEW_VALUE);
+        ResultSet rset1 = stmt1.executeQuery();
+
+        assertTrue(String.format("There is not records with text = %s in SQL database", NEW_VALUE) , rset1.next());
+        assertEquals(NEW_VALUE, rset1.getString(1));
+        assertFalse(String.format("There is more then one record with text = %s in SQL database", NEW_VALUE), rset1.next());
+    }
 }
