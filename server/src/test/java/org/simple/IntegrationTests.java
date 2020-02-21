@@ -63,19 +63,6 @@ public class IntegrationTests {
     }
 
     @Test
-    @Order(5)
-    public void deleteTest() throws IOException, SQLException {
-        getResponse(String.format("/api/delete?id=%d", testId));
-
-        Connection conn = DataBaseUtils.getConnect();
-        PreparedStatement stmt = conn.prepareStatement("SELECT id FROM TODO_LIST WHERE id = ?");
-        stmt.setInt(1, testId);
-        ResultSet rset = stmt.executeQuery();
-
-        assertFalse(String.format("There is no record with id = %d in SQL database", testId), rset.next());
-    }
-
-    @Test
     @Order(3)
     public void addToDBTest() throws SQLException, IOException {
         String TEST_VALUE = "Test_Add_To_Db_Value";
@@ -83,12 +70,12 @@ public class IntegrationTests {
         testId = Integer.parseInt(getResponse(String.format("/api/add?text=%s", TEST_VALUE)));
 
         Connection conn = DataBaseUtils.getConnect();
-        PreparedStatement stmt = conn.prepareStatement("SELECT id FROM TODO_LIST WHERE id = ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT id, text FROM TODO_LIST WHERE id = ?");
         stmt.setInt(1, testId);
         ResultSet rset = stmt.executeQuery();
 
         assertTrue(String.format("There is no record with id = %d in SQL database", testId), rset.next());
-        assertEquals(testId, rset.getInt(1));
+        assertEquals(TEST_VALUE, rset.getString(2));
         assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), rset.next());
     }
 
@@ -100,12 +87,25 @@ public class IntegrationTests {
         getResponse(String.format("/api/edit?id=%d&text=%s", testId, NEW_VALUE));
 
         Connection conn = DataBaseUtils.getConnect();
-        PreparedStatement stmt = conn.prepareStatement("SELECT text FROM TODO_LIST WHERE id = ?");
+        PreparedStatement stmt = conn.prepareStatement("SELECT id, text FROM TODO_LIST WHERE id = ?");
         stmt.setInt(1, testId);
         ResultSet rset = stmt.executeQuery();
 
-        assertTrue(String.format("There is no records with text = %s in SQL database", NEW_VALUE), rset.next());
-        assertEquals(NEW_VALUE, rset.getString(1));
-        assertFalse(String.format("There is more then one record with text = %s in SQL database", NEW_VALUE), rset.next());
+        assertTrue(String.format("There is no records with id = %d in SQL database", testId), rset.next());
+        assertEquals(NEW_VALUE, rset.getString(2));
+        assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), rset.next());
+    }
+
+    @Test
+    @Order(5)
+    public void deleteTest() throws IOException, SQLException {
+        getResponse(String.format("/api/delete?id=%d", testId));
+
+        Connection conn = DataBaseUtils.getConnect();
+        PreparedStatement stmt = conn.prepareStatement("SELECT id FROM TODO_LIST WHERE id = ?");
+        stmt.setInt(1, testId);
+        ResultSet rset = stmt.executeQuery();
+
+        assertFalse(String.format("There is no record with id = %d in SQL database", testId), rset.next());
     }
 }
