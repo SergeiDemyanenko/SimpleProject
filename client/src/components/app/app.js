@@ -16,45 +16,59 @@ export default class App extends Component {
 
   componentDidMount() {
     axios.get(`/api/list`)
-        .then(res =>{
-          const items = res.data.map((elem, index) => ({label: elem, id: index}));
+        .then(response => {
+          const items = response.data.map((elem, index) => ({label: elem, id: index}));
           this.setState({items});
-        }).catch();
+        }).catch(error => {
+          alert('Sorry, the server is unavailable :(');
+        });
   }
 
   onItemAdded = (label) => {
-    axios.get(`/api/add?text=${label}`);
-    this.setState((state) => {
-      const item = this.createItem(label);
-      return { items: [...state.items, item] };
-    });
+    axios.get(`/api/add?text=${label}`)
+        .then(response => {
+          this.setState((state) => {
+            const item = response.createItem(label);
+            return { items: [...state.items, item] };
+          });
+        }).catch(error => {
+          alert('Sorry, the server is unavailable :(');
+        });
   };
 
   onItemEdited = ( id, label) => {
-    axios.get(`/api/edit?text=${label}&id=${id}`);
-    this.setState((state) => {
-      const items = state.items.map((item) => {
-        if(item.id === id){
-          item.label = label;
-          item.toEdit = false;
-        }
-        return item;
-      });
-      return { items };
-    })
+    axios.get(`/api/edit?text=${label}&id=${id}`)
+        .then(response => {
+          this.setState((state) => {
+            const items = state.items.map((item) => {
+              if(item.id === id){
+              item.label = label;
+              item.toEdit = false;
+              }
+            return item;
+            });
+            return { items };
+          });
+        }).catch(error => {
+          alert('Sorry, the server is unavailable :(');
+          });
   };
 
   onDelete = (id) => {
-    axios.get(`/api/delete?id=${id}`);
-    this.setState((state) => {
-      const idx = state.items.findIndex((item) => item.id === id);
-      const items = [
-        ...state.items.slice(0, idx),
-        ...state.items.slice(idx + 1)
-      ];
-      items.forEach((elem, index) => {elem.id = index});
-      return { items };
-    });
+    axios.get(`/api/delete?id=${id}`)
+        .then(response => {
+          this.setState((state) => {
+            const idx = response.items.findIndex((item) => item.id === id);
+            const items = [
+              ...state.items.slice(0, idx),
+              ...state.items.slice(idx + 1)
+            ];
+          items.forEach((elem, index) => {elem.id = index});
+          return { items };
+          });
+        }).catch(error => {
+          alert('Sorry, the server is unavailable :(');
+        });
   };
 
   onEdit = (id) => {
