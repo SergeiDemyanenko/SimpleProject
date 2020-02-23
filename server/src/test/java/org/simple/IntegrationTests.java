@@ -58,8 +58,14 @@ public class IntegrationTests {
     @Test
     @Order(2)
     public void listTest() throws IOException {
-        assertEquals("[{\"id\":1,\"text\":\"go to\"},{\"id\":2,\"text\":\"do something\"}," +
-                "{\"id\":3,\"text\":\"look at it\"}]", getResponse("/api/list-obj"));
+        assertEquals("[{\"id\":1,\"text\":\"go to settings\"},{\"id\":2,\"text\":\"go to online store\"}," +
+                "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
+                "{\"id\":4,\"text\":\"change your home address\"}," +
+                "{\"id\":5,\"text\":\"save changes\"}," +
+                "{\"id\":6,\"text\":\"buy some goods\"}," +
+                "{\"id\":7,\"text\":\"go to shopping cart\"}," +
+                "{\"id\":8,\"text\":\"check your shopping cart\"}," +
+                "{\"id\":9,\"text\":\"finish shopping\"}]", getResponse("/api/list-obj"));
     }
 
     @Test
