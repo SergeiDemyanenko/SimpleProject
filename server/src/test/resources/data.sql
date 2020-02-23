@@ -1,3 +1,8 @@
+INSERT INTO TODO_GROUP (group_name) VALUES
+  ('Group 1'),
+  ('Group 2'),
+  ('Group 3');
+
 INSERT INTO TODO_LIST (text, group_id) VALUES
   ('go to settings', 2),
   ('go to online store', 1),
@@ -8,8 +13,3 @@ INSERT INTO TODO_LIST (text, group_id) VALUES
   ('go to shopping cart', 3),
   ('check your shopping cart', 1),
   ('finish shopping', 3);
-
-INSERT INTO TODO_GROUP (group_name) VALUES
-  ('Group 1'),
-  ('Group 2'),
-  ('Group 3');
