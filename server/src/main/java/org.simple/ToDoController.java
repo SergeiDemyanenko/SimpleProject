@@ -12,6 +12,11 @@ public class ToDoController {
         return DataBaseUtils.getTodoListIT();
     }
 
+    @RequestMapping("/api/list-obj-group")
+    public List<ToDoItem> listObjGroup() throws SQLException {
+        return DataBaseUtils.getTodoListGroup();
+    }
+
     @RequestMapping("/api/list")
     public List<String> list() throws SQLException {
         return DataBaseUtils.getTodoList();

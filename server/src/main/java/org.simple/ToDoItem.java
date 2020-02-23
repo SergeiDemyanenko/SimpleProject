@@ -7,10 +7,12 @@ public class ToDoItem {
 
     private int id;
     private String text;
+    private int group_id;
 
-    public ToDoItem(int id, String text) {
+    public ToDoItem(int id, String text, int group_id) {
         this.id = id;
         this.text = text;
+        this.group_id = group_id;
     }
 
     public int getId() {

@@ -41,12 +41,27 @@ public class DataBaseUtils {
 
         Connection conn = getConnect();
         Statement sql_stmt = conn.createStatement();
-        ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM todo_list");
+        ResultSet rset = sql_stmt.executeQuery("SELECT id, text, group_id FROM todo_list");
         while (rset.next()) {
-            todoListIT.add(new ToDoItem(rset.getInt("id"), rset.getString("text")));
+            todoListIT.add(new ToDoItem(rset.getInt("id"), rset.getString("text"), +
+                    rset.getInt("group_id")));
         }
 
         return todoListIT;
+    }
+
+    public static List<ToDoItem> getTodoListGroup() throws SQLException {
+        List<ToDoItem> todoListGroup = new ArrayList<>();
+
+        Connection conn = getConnect();
+        Statement sql_stmt = conn.createStatement();
+        ResultSet rset = sql_stmt.executeQuery("SELECT id, text, group_id FROM todo_list GROUP BY id, group_id ORDER BY group_id");
+        while (rset.next()) {
+            todoListGroup.add(new ToDoItem(rset.getInt("id"), rset.getString("text"), +
+                    rset.getInt("group_id")));
+        }
+
+        return todoListGroup;
     }
 
     public static List<String> getTodoList() throws SQLException {

@@ -58,18 +58,33 @@ public class IntegrationTests {
     @Test
     @Order(2)
     public void listTest() throws IOException {
-        assertEquals("[{\"id\":1,\"text\":\"go to settings\"},{\"id\":2,\"text\":\"go to online store\"}," +
-                "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
-                "{\"id\":4,\"text\":\"change your home address\"}," +
-                "{\"id\":5,\"text\":\"save changes\"}," +
-                "{\"id\":6,\"text\":\"buy some goods\"}," +
-                "{\"id\":7,\"text\":\"go to shopping cart\"}," +
-                "{\"id\":8,\"text\":\"check your shopping cart\"}," +
-                "{\"id\":9,\"text\":\"finish shopping\"}]", getResponse("/api/list-obj"));
+        assertEquals("[{\"id\":1,\"text\":\"go to settings\",\"group_id\":2}," +
+                "{\"id\":2,\"text\":\"go to online store\",\"group_id\":1}," +
+                "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\",\"group_id\":1}," +
+                "{\"id\":4,\"text\":\"change your home address\",\"group_id\":2}," +
+                "{\"id\":5,\"text\":\"save changes\",\"group_id\":2}," +
+                "{\"id\":6,\"text\":\"buy some goods\",\"group_id\":1}," +
+                "{\"id\":7,\"text\":\"go to shopping cart\",\"group_id\":3}," +
+                "{\"id\":8,\"text\":\"check your shopping cart\",\"group_id\":1}," +
+                "{\"id\":9,\"text\":\"finish shopping\",\"group_id\":3}]", getResponse("/api/list-obj"));
     }
 
     @Test
     @Order(3)
+    public void listGroupTest() throws IOException {
+        assertEquals("[{\"id\":2,\"text\":\"go to online store\",\"group_id\":1}," +
+                "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\",\"group_id\":1}," +
+                "{\"id\":8,\"text\":\"check your shopping cart\",\"group_id\":1}," +
+                "{\"id\":6,\"text\":\"buy some goods\",\"group_id\":1}," +
+                "{\"id\":1,\"text\":\"go to settings\",\"group_id\":2}," +
+                "{\"id\":5,\"text\":\"save changes\",\"group_id\":2}," +
+                "{\"id\":4,\"text\":\"change your home address\",\"group_id\":2}," +
+                "{\"id\":9,\"text\":\"finish shopping\",\"group_id\":3}," +
+                "{\"id\":7,\"text\":\"go to shopping cart\",\"group_id\":3}]", getResponse("/api/list-obj-group"));
+    }
+
+    @Test
+    @Order(4)
     public void addToDBTest() throws SQLException, IOException {
         String TEST_VALUE = "Test_Add_To_Db_Value";
 
@@ -86,7 +101,7 @@ public class IntegrationTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void editTest() throws IOException, SQLException {
         String NEW_VALUE = "do_not_look_at_it";
 
@@ -103,7 +118,7 @@ public class IntegrationTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void deleteTest() throws IOException, SQLException {
         getResponse(String.format("/api/delete?id=%d", testId));
 
