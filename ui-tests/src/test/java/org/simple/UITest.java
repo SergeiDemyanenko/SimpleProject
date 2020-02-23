@@ -9,6 +9,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -48,6 +49,23 @@ public class UITest {
 
             mainPage.deleteFirstTodo();
             assertEquals(todoListSize - 1, mainPage.getAllTodoItems().size());
+        } finally {
+            driver.close();
+        }
+    }
+
+    @Test
+    public void editTest(){
+        WebDriver driver = new ChromeDriver();
+        MainPage mainPage = new MainPage(driver);
+        try {
+            driver.get("http://localhost:3000/");
+
+            List<WebElement> todoList = mainPage.getAllTodoItems();
+            assertTrue("There are nothing to edit in the List", todoList.size() > 0);
+
+            mainPage.editFirstTodo(todoList);
+            assertEquals(mainPage.getFirstElement().getText(), mainPage.EDIT_VALUE);
         } finally {
             driver.close();
         }
