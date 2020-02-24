@@ -15,9 +15,9 @@ export default class App extends Component {
   };
 
   componentDidMount() {
-    axios.get(`/api/list`)
+    axios.get(`/api/list-obj`)
         .then(response => {
-          const items = response.data.map((elem, index) => ({label: elem, id: index}));
+          const items = response.data.map((elem) => ({label: elem.text, id: elem.id}));
           this.setState({items});
         }).catch(error => {
           alert('Sorry, the server is unavailable :(');
