@@ -25,26 +25,39 @@ import static org.springframework.test.util.AssertionErrors.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ApiTest {
 
+    private static final String SQL_GET_TODO_LIST_BY_ID = "SELECT id, text FROM TODO_LIST WHERE id = ?";
+
     private static int testId;
 
     @LocalServerPort
     private int randomServerPort;
 
-    private CloseableHttpClient httpClient = HttpClients.createDefault();
-
     private String getResponse(String uri) throws IOException {
         String result;
 
-        HttpGet request = new HttpGet(String.format("http://localhost:%d%s", randomServerPort, uri));
-        try (CloseableHttpResponse response = httpClient.execute(request)) {
-            assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet(String.format("http://localhost:%d%s", randomServerPort, uri));
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+                assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
 
-            HttpEntity entity = response.getEntity();
-            assertNotNull("response is null", entity);
-            result = EntityUtils.toString(entity);
+                HttpEntity entity = response.getEntity();
+                assertNotNull("response is null", entity);
+                result = EntityUtils.toString(entity);
+            }
         }
 
         return result;
+    }
+
+    private ResultSet getResultSet(String sql, Object... params) throws SQLException {
+        Connection conn = DataBaseUtils.getConnect();
+        PreparedStatement stmt = conn.prepareStatement(sql);
+
+        for (int i = 0; i < params.length; i++) {
+            stmt.setObject(i + 1, params[i]);
+        }
+
+        return stmt.executeQuery();
     }
 
     @Test
@@ -68,48 +81,36 @@ public class ApiTest {
 
     @Test
     @Order(3)
-    public void addToDBTest() throws SQLException, IOException {
-        String TEST_VALUE = "Test_Add_To_Db_Value";
+    public void addTest() throws SQLException, IOException {
+        final String TEST_VALUE = getClass().getName() + "_addTest";
 
         testId = Integer.parseInt(getResponse(String.format("/api/add?text=%s", TEST_VALUE)));
+        ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
 
-        Connection conn = DataBaseUtils.getConnect();
-        PreparedStatement stmt = conn.prepareStatement("SELECT id, text FROM TODO_LIST WHERE id = ?");
-        stmt.setInt(1, testId);
-        ResultSet rset = stmt.executeQuery();
-
-        assertTrue(String.format("There is no record with id = %d in SQL database", testId), rset.next());
-        assertEquals(TEST_VALUE, rset.getString(2));
-        assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), rset.next());
+        assertTrue(String.format("There is no record with id = %d in SQL database", testId), resultSet.next());
+        assertEquals(TEST_VALUE, resultSet.getString(2));
+        assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), resultSet.next());
     }
 
     @Test
     @Order(4)
     public void editTest() throws IOException, SQLException {
-        String NEW_VALUE = "do_not_look_at_it";
+        final String TEST_VALUE = getClass().getName() + "_editTest";
 
-        getResponse(String.format("/api/edit?id=%d&text=%s", testId, NEW_VALUE));
+        getResponse(String.format("/api/edit?id=%d&text=%s", testId, TEST_VALUE));
+        ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
 
-        Connection conn = DataBaseUtils.getConnect();
-        PreparedStatement stmt = conn.prepareStatement("SELECT id, text FROM TODO_LIST WHERE id = ?");
-        stmt.setInt(1, testId);
-        ResultSet rset = stmt.executeQuery();
-
-        assertTrue(String.format("There is no records with id = %d in SQL database", testId), rset.next());
-        assertEquals(NEW_VALUE, rset.getString(2));
-        assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), rset.next());
+        assertTrue(String.format("There is no records with id = %d in SQL database", testId), resultSet.next());
+        assertEquals(TEST_VALUE, resultSet.getString(2));
+        assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), resultSet.next());
     }
 
     @Test
     @Order(5)
     public void deleteTest() throws IOException, SQLException {
         getResponse(String.format("/api/delete?id=%d", testId));
+        ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
 
-        Connection conn = DataBaseUtils.getConnect();
-        PreparedStatement stmt = conn.prepareStatement("SELECT id FROM TODO_LIST WHERE id = ?");
-        stmt.setInt(1, testId);
-        ResultSet rset = stmt.executeQuery();
-
-        assertFalse(String.format("There is no record with id = %d in SQL database", testId), rset.next());
+        assertFalse(String.format("There is no record with id = %d in SQL database", testId), resultSet.next());
     }
 }
