@@ -1,4 +1,4 @@
-package org.simple;
+package org.simple.integration;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -8,10 +8,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.simple.utils.RunServer;
+import org.simple.utils.TestGroupIntegration;
+import org.simple.DataBaseUtils;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
 import java.sql.*;
@@ -20,12 +20,10 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.util.AssertionErrors.*;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(
-        classes = Application.class,
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@RunServer
+@TestGroupIntegration
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class IntegrationTests {
+public class ApiTest {
 
     private static int testId;
 
