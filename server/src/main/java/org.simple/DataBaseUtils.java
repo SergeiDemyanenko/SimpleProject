@@ -111,12 +111,9 @@ public class DataBaseUtils {
             todoGroup = new ArrayList<>();
 
             Statement sql_stmt = conn.createStatement();
-            ResultSet rset = sql_stmt.executeQuery(String.format(
-                    "SELECT todo_list.id,todo_list.text\n" +
-                    "FROM todo_list\n" +
-                    "LEFT JOIN todo_group\n" +
-                    "ON todo_list.group_id = todo_group.id\n" +
-                    "WHERE todo_list.group_id = %s;", getTodoGroups().get(i).getGroup_id()));
+            PreparedStatement stmt = conn.prepareStatement("SELECT id, text FROM todo_list WHERE group_id = ?;");
+            stmt.setInt(1,i);
+            ResultSet rset = stmt.executeQuery();
             while (rset.next()) {
                 todoGroup.add(new ToDoItem(rset.getInt("todo_list.id"), rset.getString("todo_list.text")));
             }
