@@ -88,4 +88,41 @@ public class DataBaseUtils {
             throw new SQLException("can not get id for new record");
         }
     }
+
+    public static List<ToDoGroup> getTodoGroups() throws SQLException {
+        List<ToDoGroup> todoListGroups = new ArrayList<>();
+
+        Connection conn = getConnect();
+        Statement sql_stmt = conn.createStatement();
+        ResultSet rset = sql_stmt.executeQuery("SELECT id, group_name FROM todo_group");
+        while (rset.next()) {
+            todoListGroups.add(new ToDoGroup(rset.getInt("id"), rset.getString("group_name")));
+        }
+
+        return todoListGroups;
+    }
+
+    public static List<ToDoFormedGroup> getFormedGroup() throws SQLException {
+        List<ToDoItem> todoGroup;
+        List<ToDoFormedGroup> toDoFormedGroups = new ArrayList<>();
+
+        Connection conn = getConnect();
+        for (int i = 0; i < getTodoGroups().size(); i++) {
+            todoGroup = new ArrayList<>();
+
+            Statement sql_stmt = conn.createStatement();
+            ResultSet rset = sql_stmt.executeQuery(String.format(
+                    "SELECT todo_list.id,todo_list.text\n" +
+                    "FROM todo_list\n" +
+                    "LEFT JOIN todo_group\n" +
+                    "ON todo_list.group_id = todo_group.id\n" +
+                    "WHERE todo_list.group_id = %s;", getTodoGroups().get(i).getGroup_id()));
+            while (rset.next()) {
+                todoGroup.add(new ToDoItem(rset.getInt("todo_list.id"), rset.getString("todo_list.text")));
+            }
+            toDoFormedGroups.add(new ToDoFormedGroup(getTodoGroups().get(i).getGroup_id(), getTodoGroups().get(i).getGroup_name(), todoGroup));
+        }
+
+        return toDoFormedGroups;
+    }
 }
