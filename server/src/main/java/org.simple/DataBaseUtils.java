@@ -112,7 +112,7 @@ public class DataBaseUtils {
 
             Statement sql_stmt = conn.createStatement();
             PreparedStatement stmt = conn.prepareStatement("SELECT id, text FROM todo_list WHERE group_id = ?;");
-            stmt.setInt(1,i);
+            stmt.setInt(1,getTodoGroups().get(i).getGroup_id());
             ResultSet rset = stmt.executeQuery();
             while (rset.next()) {
                 todoGroup.add(new ToDoItem(rset.getInt("todo_list.id"), rset.getString("todo_list.text")));
