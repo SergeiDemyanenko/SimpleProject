@@ -126,6 +126,5 @@ public class ApiTest {
                         "{\"group_id\":3,\"group_name\":\"Group 3\",\"todoFormedGroup\":[{\"id\":7,\"text\":\"" +
                         "go to shopping cart\"},{\"id\":9,\"text\":\"finish shopping\"}]}]",
                 getResponse("/api/list-group"));
-
     }
 }
