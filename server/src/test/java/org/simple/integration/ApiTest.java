@@ -113,4 +113,18 @@ public class ApiTest {
 
         assertFalse(String.format("There is no record with id = %d in SQL database", testId), resultSet.next());
     }
+
+    @Test
+    @Order(6)
+    public void listGroupTest() throws IOException, SQLException {
+        assertEquals(
+                "[{\"group_id\":1,\"group_name\":\"Group 1\",\"todoFormedGroup\":[{\"id\":2,\"text\":\"" +
+                        "go to online store\"},{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
+                        "{\"id\":6,\"text\":\"buy some goods\"},{\"id\":8,\"text\":\"check your shopping cart\"}]}," +
+                        "{\"group_id\":2,\"group_name\":\"Group 2\",\"todoFormedGroup\":[{\"id\":1,\"text\":\"" +
+                        "go to settings\"},{\"id\":4,\"text\":\"change your home address\"},{\"id\":5,\"text\":\"save changes\"}]}," +
+                        "{\"group_id\":3,\"group_name\":\"Group 3\",\"todoFormedGroup\":[{\"id\":7,\"text\":\"" +
+                        "go to shopping cart\"},{\"id\":9,\"text\":\"finish shopping\"}]}]",
+                getResponse("/api/list-group"));
+    }
 }

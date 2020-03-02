@@ -17,6 +17,11 @@ public class ToDoController {
         return DataBaseUtils.getTodoList();
     }
 
+    @RequestMapping("/api/list-group")
+    public List<ToDoFormedGroup> listGroup() throws SQLException {
+        return DataBaseUtils.getFormedGroup();
+    }
+
     @RequestMapping("/api/add")
     public int add(@RequestParam String text) throws SQLException {
         return DataBaseUtils.addRecord(text);
