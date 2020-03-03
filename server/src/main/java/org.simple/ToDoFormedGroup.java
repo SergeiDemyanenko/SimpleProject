@@ -16,16 +16,4 @@ public class ToDoFormedGroup {
         this.group_name = group_name;
         this.todoFormedGroup = toDoFormedGroup;
     }
-
-    public int getGroup_id() {
-        return group_id;
-    }
-
-    public String getGroup_name() {
-        return group_name;
-    }
-
-    public List<ToDoItem> getTodoFormedGroup() {
-        return todoFormedGroup;
-    }
 }

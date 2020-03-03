@@ -13,10 +13,6 @@ public class ToDoGroup {
         this.group_name = group_name;
     }
 
-    public ToDoGroup(int group_id) {
-        this.group_id = group_id;
-    }
-
     public int getGroup_id() {
         return group_id;
     }
