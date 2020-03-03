@@ -136,8 +136,8 @@ public class DataBaseUtils {
             if(rset.isLast()){
                 toDoFormedGroups.add(new ToDoFormedGroup(todoGroupId, todoGroupName, todoGroup));
             }
-
         }
+
         return toDoFormedGroups;
     }
 }
