@@ -116,11 +116,11 @@ public class DataBaseUtils {
                 "ORDER BY todo_list.group_id;");
         ResultSet rset = stmt.executeQuery();
 
-        int previous_group_id = -999;
+        Integer previous_group_id = null;
         String todoGroupName = null;
-        int todoGroupId = -999;
+        Integer todoGroupId = null;
         while(rset.next()){
-            if(previous_group_id  == -999){
+            if(previous_group_id  == null){
                 previous_group_id = rset.getInt("todo_list.group_id");
             }
             if(rset.getInt("todo_list.group_id") == previous_group_id){
