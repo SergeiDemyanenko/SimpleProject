@@ -88,4 +88,56 @@ public class DataBaseUtils {
             throw new SQLException("can not get id for new record");
         }
     }
+
+    public static List<ToDoGroup> getTodoGroups() throws SQLException {
+        List<ToDoGroup> todoListGroups = new ArrayList<>();
+
+        Connection conn = getConnect();
+        Statement sql_stmt = conn.createStatement();
+        ResultSet rset = sql_stmt.executeQuery("SELECT id, group_name FROM todo_group ORDER BY id;");
+        while (rset.next()) {
+            todoListGroups.add(new ToDoGroup(rset.getInt("id"), rset.getString("group_name")));
+        }
+
+        return todoListGroups;
+    }
+
+    public static List<ToDoFormedGroup> getFormedGroup() throws SQLException {
+        List<ToDoItem> todoGroup = new ArrayList<>();
+        List<ToDoFormedGroup> toDoFormedGroups = new ArrayList<>();
+
+        Connection conn = getConnect();
+        Statement sql_stmt = conn.createStatement();
+        PreparedStatement stmt = conn.prepareStatement(
+                "SELECT todo_list.id, todo_list.text, todo_list.group_id, todo_group.group_name " +
+                "FROM todo_list " +
+                "LEFT JOIN todo_group ON " +
+                "todo_list.group_id = todo_group.id " +
+                "ORDER BY todo_list.group_id;");
+        ResultSet rset = stmt.executeQuery();
+
+        Integer previous_group_id = null;
+        String todoGroupName = null;
+        Integer todoGroupId = null;
+        while(rset.next()){
+            if(previous_group_id  == null){
+                previous_group_id = rset.getInt("todo_list.group_id");
+            }
+            if(rset.getInt("todo_list.group_id") == previous_group_id){
+                todoGroup.add(new ToDoItem(rset.getInt("todo_list.id"), rset.getString("todo_list.text")));
+                todoGroupName = rset.getString("todo_group.group_name");
+                todoGroupId = rset.getInt("todo_list.group_id");
+            }else {
+                toDoFormedGroups.add(new ToDoFormedGroup(todoGroupId, todoGroupName, todoGroup));
+                todoGroup = new ArrayList<>();
+                todoGroup.add(new ToDoItem(rset.getInt("todo_list.id"), rset.getString("todo_list.text")));
+                previous_group_id = rset.getInt("todo_list.group_id");
+            }
+            if(rset.isLast()){
+                toDoFormedGroups.add(new ToDoFormedGroup(todoGroupId, todoGroupName, todoGroup));
+            }
+        }
+
+        return toDoFormedGroups;
+    }
 }
