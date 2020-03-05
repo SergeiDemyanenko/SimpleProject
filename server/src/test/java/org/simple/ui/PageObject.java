@@ -1,10 +1,10 @@
-package org.simple;
+package org.simple.ui;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class PageObject {
+
     protected WebDriver driver;
 
     public PageObject(WebDriver driver){

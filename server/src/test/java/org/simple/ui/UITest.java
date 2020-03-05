@@ -6,6 +6,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.simple.ui.pages.MainPage;
 import org.simple.utils.RunServer;
 import org.simple.utils.TestGroupUI;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -90,4 +92,37 @@ public class UITest {
         assertTrue(labelList.stream().anyMatch(e -> TEST_VALUE.equals(e.getText())), "added string not found");
     }
 
+    @Test
+    public void deleteTest() {
+        WebDriver driver = new ChromeDriver();
+        MainPage mainPage = new MainPage(driver);
+        try {
+            driver.get("http://localhost:3000/");
+
+            int todoListSize = mainPage.getAllTodoItems().size();
+            Assert.assertTrue("There are nothing to delete in the List", todoListSize > 0);
+
+            mainPage.deleteFirstTodo();
+            assertEquals(todoListSize - 1, mainPage.getAllTodoItems().size());
+        } finally {
+            driver.close();
+        }
+    }
+
+    @Test
+    public void editTest() {
+        WebDriver driver = new ChromeDriver();
+        MainPage mainPage = new MainPage(driver);
+        try {
+            driver.get("http://localhost:3000/");
+
+            List<WebElement> todoList = mainPage.getAllTodoItems();
+            Assert.assertTrue("There are nothing to edit in the List", todoList.size() > 0);
+
+            mainPage.editFirstTodo(todoList);
+            assertEquals(mainPage.getFirstElement().getText(), mainPage.EDIT_VALUE);
+        } finally {
+            driver.close();
+        }
+    }
 }

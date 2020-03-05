@@ -1,9 +1,10 @@
-package org.simple;
+package org.simple.ui.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.simple.ui.PageObject;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class MainPage extends PageObject {
         super(driver);
     }
 
-    final String EDIT_VALUE = "EDITED-VALUE";
+    public final String EDIT_VALUE = "EDITED-VALUE";
 
     static By todoItemSelector = By.xpath("//span[@class='todo-list-item']");
     static By deleteButtonSelector = By.xpath("//button[@type='button']/i[@class='fa fa-trash-o']");
