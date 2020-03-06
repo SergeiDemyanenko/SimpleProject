@@ -109,11 +109,11 @@ public class DataBaseUtils {
         Connection conn = getConnect();
         Statement sql_stmt = conn.createStatement();
         PreparedStatement stmt = conn.prepareStatement(
-                "SELECT todo_list.id, todo_list.text, todo_list.group_id, todo_group.group_name " +
-                "FROM todo_list " +
-                "LEFT JOIN todo_group ON " +
-                "todo_list.group_id = todo_group.id " +
-                "ORDER BY todo_list.group_id;");
+                "SELECT tl.id, tl.text, tl.group_id, tg.group_name " +
+                "FROM todo_list tl " +
+                "LEFT JOIN todo_group tg ON " +
+                "tl.group_id = tg.id " +
+                "ORDER BY tl.group_id;");
         ResultSet rset = stmt.executeQuery();
 
         Integer previous_group_id = null;
