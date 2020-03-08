@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import SearchPanel from '../search-panel';
 import AppHeader from '../app-header';
 import TodoList from '../todo-list';
 import ItemAddForm from '../item-add-form';
+import ItemStatusFilter from '../item-status-filter'
 
 import './app.css';
 
@@ -11,7 +12,8 @@ import './app.css';
 export default class App extends Component {
 
   state = {
-    items: []
+    items: [],
+      term: ''
   };
 
   componentDidMount() {
@@ -90,12 +92,15 @@ export default class App extends Component {
     };
   }
 
+
   render() {
     const { items } = this.state;
 
     return (
       <div className="todo-app">
         <AppHeader />
+          <SearchPanel />
+          <ItemStatusFilter />
 
         <TodoList
           items={ items }
