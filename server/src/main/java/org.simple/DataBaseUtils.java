@@ -41,7 +41,7 @@ public class DataBaseUtils {
 
         Connection conn = getConnect();
         Statement sql_stmt = conn.createStatement();
-        ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM todo_list");
+        ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM todo_list order by id");
         while (rset.next()) {
             todoListIT.add(new ToDoItem(rset.getInt("id"), rset.getString("text")));
         }

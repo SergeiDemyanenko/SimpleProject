@@ -11,7 +11,15 @@ matrix:
 
     - language: java
       dist: trusty
+      services:
+        - docker
+      before_install:
+        - docker network create grid
+        - docker run -d -p 4444:4444 --net grid --name selenium-hub selenium/hub:3.141.59-zirconium
+        - docker run -d --net grid -e HUB_HOST=selenium-hub -v /dev/shm:/dev/shm selenium/node-chrome:3.141.59-zirconium
+        - docker run -d --net grid -e HUB_HOST=selenium-hub -v /dev/shm:/dev/shm selenium/node-firefox:3.141.59-zirconium
       jdk: oraclejdk8
 
       script:
-        - mvn test --file server
+        - docker-compose -f ./docker/docker-compose.yaml up
+        - mvn clean test -Dtest.group=all --file server
