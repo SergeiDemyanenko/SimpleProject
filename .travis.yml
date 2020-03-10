@@ -1,6 +1,17 @@
-language: java
-jdk:
-- oraclejdk8
-dist: trusty
+matrix:
+  include:
+    - language: node_js
+      dist: trusty
+      cache: npm
+      node_js: "12.13"
+      install:
+        - npm install --prefix client
+      script:
+        - npm run build --perfix client
 
-script: "mvn test --file server"
+    - language: java
+      dist: trusty
+      jdk: oraclejdk8
+
+      script:
+        - mvn test --file server
