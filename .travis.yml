@@ -7,7 +7,7 @@ matrix:
       install:
         - npm install --prefix client
       script:
-        - npm run build --perfix client
+        - npm run build --prefix client
 
     - language: java
       dist: trusty
