@@ -23,4 +23,4 @@ services:
   hub:
     image: selenium/hub:3.141.59-zirconium
     ports:
-      - "4440:4440"
+      - 4444
