@@ -45,7 +45,7 @@ import static org.springframework.test.util.AssertionErrors.assertNotNull;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UITest {
 
-    private static String HUB_URL = "http://localhost:4440/wd/hub";
+    private static String HUB_URL = "http://localhost:4444/wd/hub";
     private static boolean remoteWebDriver = false;
 
     @BeforeAll
@@ -71,7 +71,6 @@ public class UITest {
         if (remoteWebDriver) {
             driver = new RemoteWebDriver(new URL(HUB_URL), DesiredCapabilities.chrome());
         } else {
-            System.setProperty("webdriver.chrome.driver", "../../chromedriver");
             driver = new ChromeDriver();
         }
 
