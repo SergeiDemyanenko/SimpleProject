@@ -91,7 +91,7 @@ public class UITest {
     }
 
     protected String getHost() {
-        if (remoteWebDriver) {
+        if (remoteWebDriver && !System.getProperty("os.name").contains("nix")) {
             return String.format("http://host.docker.internal:%d/", randomServerPort);
         } else {
             return String.format("http://localhost:%d/", randomServerPort);
