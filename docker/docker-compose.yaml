@@ -10,8 +10,6 @@ services:
       - hub
     environment:
       HUB_HOST: hub
-    extra_hosts:
-      - "localhost.host:${HOST_IP}"
 
   firefox:
     image: selenium/node-firefox:3.141.59-zirconium
@@ -21,8 +19,6 @@ services:
       - hub
     environment:
       HUB_HOST: hub
-    extra_hosts:
-      - "localhost.host:${HOST_IP}"
 
   hub:
     image: selenium/hub:3.141.59-zirconium

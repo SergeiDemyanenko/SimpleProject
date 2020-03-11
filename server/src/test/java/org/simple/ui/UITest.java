@@ -92,7 +92,7 @@ public class UITest {
 
     protected String getHost() {
         if (remoteWebDriver) {
-            return String.format("http://localhost.host:%d/", randomServerPort);
+            return String.format("http://host.docker.internal:%d/", randomServerPort);
         } else {
             return String.format("http://localhost:%d/", randomServerPort);
         }
