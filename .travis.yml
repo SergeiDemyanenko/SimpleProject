@@ -11,6 +11,11 @@ matrix:
 
     - language: java
       dist: trusty
+      cache:
+        bundler: true
+        directories:
+          - $HOME/.m2
+          - $HOME/docker
       services:
         - docker
       before_install:
