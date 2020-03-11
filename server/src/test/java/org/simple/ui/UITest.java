@@ -45,7 +45,7 @@ import static org.springframework.test.util.AssertionErrors.assertNotNull;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UITest {
 
-    private static String HUB_URL = "http://localhost:4440/wd/hub";
+    private static String HUB_URL = "http://localhost:4444/wd/hub";
     private static boolean remoteWebDriver = false;
 
     @BeforeAll
@@ -92,7 +92,7 @@ public class UITest {
 
     protected String getHost() {
         if (remoteWebDriver) {
-            return String.format("http://host.docker.internal:%d/", randomServerPort);
+            return String.format("http://localhost.host:%d/", randomServerPort);
         } else {
             return String.format("http://localhost:%d/", randomServerPort);
         }
