@@ -22,5 +22,6 @@ matrix:
 
       script:
         - docker-compose -f ./docker/docker-compose.yaml up -d
+        - . ./docker/wait-for-grid.sh
         - mvn clean test -Dtest.group=all --file server
         - docker-compose -f ./docker/docker-compose.yaml down
