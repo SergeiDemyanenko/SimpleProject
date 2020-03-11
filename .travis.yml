@@ -25,7 +25,7 @@ jobs:
       jdk: oraclejdk8
 
       script:
-        - HOST_IP=$(ipconfig getifaddr en0)
+        - export HOST_IP=$(ifconfig en0 | awk '/inet / {print $2}')
         - docker-compose -f ./docker/docker-compose.yaml up -d
         - . ./docker/wait-for-grid.sh
         - mvn clean test -Dtest.group=all --file server
