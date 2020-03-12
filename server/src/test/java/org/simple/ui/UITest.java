@@ -25,7 +25,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.simple.ui.pages.MainPage;
 import org.simple.utils.RunServer;
-import org.simple.utils.TestGroupUI;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.IOException;
@@ -41,7 +40,6 @@ import static org.springframework.test.util.AssertionErrors.assertNotNull;
 
 
 @RunServer
-@TestGroupUI
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UITest {
 

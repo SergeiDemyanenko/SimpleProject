@@ -9,7 +9,6 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.junit.jupiter.api.*;
 import org.simple.utils.RunServer;
-import org.simple.utils.TestGroupIntegration;
 import org.simple.DataBaseUtils;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -21,7 +20,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.util.AssertionErrors.*;
 
 @RunServer
-@TestGroupIntegration
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ApiTest {
 

@@ -26,8 +26,7 @@ matrix:
 
       script:
         - export HOST_IP=$(ifconfig docker0 | awk -F"[:, ]+" '/inet/ {print $4}')
-        - echo $HOST_IP
         - docker-compose -f ./docker/docker-compose.yaml up -d
         - . ./docker/wait-for-grid.sh
-        - mvn clean test -Dtest.group=all --file server
+        - mvn clean test --file server
         - docker-compose -f ./docker/docker-compose.yaml down
