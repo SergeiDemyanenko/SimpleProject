@@ -21,6 +21,5 @@ script:
   - CI=false npm run build --prefix client
   - export HOST_IP=$(ifconfig docker0 | awk -F"[:, ]+" '/inet/ {print $4}')
   - docker-compose -f ./docker/docker-compose.yaml up -d
-  - . ./docker/wait-for-grid.sh
-  - mvn clean test --file server
+  - . ./docker/wait-for-grid.sh && mvn clean test --file server
   - docker-compose -f ./docker/docker-compose.yaml down
