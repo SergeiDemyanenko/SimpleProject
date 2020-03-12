@@ -1,32 +1,26 @@
-matrix:
-  include:
-    - language: node_js
-      dist: trusty
-      cache: npm
-      node_js: "12.13"
-      install:
-        - npm install --prefix client
-      script:
-        - npm run build --prefix client
+language: java
+dist: trusty
+jdk: oraclejdk8
+node_js: "12.13"
+cache:
+  bundler: true
+  directories:
+    - $HOME/.m2
+    - $HOME/.npm
+    - $HOME/docker
+addons:
+  apt:
+    packages:
+      - net-tools
+services:
+  - docker
+install:
+  - npm install --prefix client
 
-    - language: java
-      dist: trusty
-      cache:
-        bundler: true
-        directories:
-          - $HOME/.m2
-          - $HOME/docker
-      addons:
-        apt:
-          packages:
-            - net-tools
-      services:
-        - docker
-      jdk: oraclejdk8
-
-      script:
-        - export HOST_IP=$(ifconfig docker0 | awk -F"[:, ]+" '/inet/ {print $4}')
-        - docker-compose -f ./docker/docker-compose.yaml up -d
-        - . ./docker/wait-for-grid.sh
-        - mvn clean test --file server
-        - docker-compose -f ./docker/docker-compose.yaml down
+script:
+  - npm run build --prefix client
+  - export HOST_IP=$(ifconfig docker0 | awk -F"[:, ]+" '/inet/ {print $4}')
+  - docker-compose -f ./docker/docker-compose.yaml up -d
+  - . ./docker/wait-for-grid.sh
+  - mvn clean test --file server
+  - docker-compose -f ./docker/docker-compose.yaml down
