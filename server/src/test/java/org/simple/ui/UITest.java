@@ -10,7 +10,11 @@ import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -21,7 +25,6 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.simple.ui.pages.MainPage;
 import org.simple.utils.RunServer;
-import org.simple.utils.TestGroupUI;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.IOException;
@@ -37,29 +40,28 @@ import static org.springframework.test.util.AssertionErrors.assertNotNull;
 
 
 @RunServer
-@TestGroupUI
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UITest {
 
     private static String HUB_URL = "http://localhost:4444/wd/hub";
-
     private static boolean remoteWebDriver = false;
-
-    @LocalServerPort
-    private int randomServerPort;
-
-    private WebDriver driver;
-    private WebDriverWait wait;
 
     @BeforeAll
     private static void setUpAll() throws IOException {
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpGet request = new HttpGet(HUB_URL);
+            HttpGet request = new HttpGet(HUB_URL + "/status");
             try (CloseableHttpResponse response = httpClient.execute(request)) {
                 remoteWebDriver = response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
             } catch (HttpHostConnectException e) {}
         }
     }
+
+    @LocalServerPort
+    private int randomServerPort;
+
+    private WebDriver driver;
+    private WebDriverWait driverWait;
 
     @BeforeEach
     private void setUp() throws MalformedURLException {
@@ -67,62 +69,74 @@ public class UITest {
         if (remoteWebDriver) {
             driver = new RemoteWebDriver(new URL(HUB_URL), DesiredCapabilities.chrome());
         } else {
-            System.setProperty("webdriver.chrome.driver", "d:\\Work\\Projects\\chromedriver.exe");
             driver = new ChromeDriver();
         }
 
-        wait = new WebDriverWait(driver, 5);
+        driverWait = new WebDriverWait(driver, 5);
     }
 
     @AfterEach
     private void setDown() {
-        driver.close();
+        driver.quit();
+    }
+
+    protected WebDriver getDriver() {
+        return driver;
+    }
+
+    protected WebDriverWait getDriverWait() {
+        return driverWait;
+    }
+
+    protected String getHost() {
+        if (remoteWebDriver) {
+            return String.format("http://localhost.host:%d/", randomServerPort);
+        } else {
+            return String.format("http://localhost:%d/", randomServerPort);
+        }
     }
 
     @Test
+    @Order(1)
     public void addTest() {
         final String TEST_VALUE = "test string";
 
-        driver.get(String.format("http://localhost:%d/", randomServerPort));
+        getDriver().get(getHost());
 
-        WebElement input = wait.until(presenceOfElementLocated(By.className("new-todo-label")));
+        WebElement input = getDriverWait().until(presenceOfElementLocated(By.className("new-todo-label")));
+        List<WebElement> labelList = getDriverWait().until(presenceOfAllElementsLocatedBy(By.className("todo-list-item-label")));
+
         input.sendKeys(TEST_VALUE + Keys.ENTER);
 
-        List<WebElement> labelList = wait.until(presenceOfAllElementsLocatedBy(By.className("todo-list-item-label")));
-        assertTrue(labelList.stream().anyMatch(e -> TEST_VALUE.equals(e.getText())), "added string not found");
+        assertNotNull("added string not found",
+                getDriverWait().until(presenceOfElementLocated(By.xpath(String.format("(//span[@class=\"todo-list-item-label\"])[%d]", labelList.size() + 1)))));
     }
 
     @Test
+    @Order(2)
     public void deleteTest() {
-        WebDriver driver = new ChromeDriver();
-        MainPage mainPage = new MainPage(driver);
-        try {
-            driver.get("http://localhost:3000/");
+        MainPage mainPage = new MainPage(getDriver());
 
-            int todoListSize = mainPage.getAllTodoItems().size();
-            Assert.assertTrue("There are nothing to delete in the List", todoListSize > 0);
+        getDriver().get(getHost());
 
-            mainPage.deleteFirstTodo();
-            assertEquals(todoListSize - 1, mainPage.getAllTodoItems().size());
-        } finally {
-            driver.close();
-        }
+        int todoListSize = mainPage.getAllTodoItems().size();
+        Assert.assertTrue("There are nothing to delete in the List", todoListSize > 0);
+
+        mainPage.deleteLastTodo();
+        assertEquals(todoListSize - 1, mainPage.getAllTodoItems().size());
     }
 
+    @Disabled
     @Test
     public void editTest() {
-        WebDriver driver = new ChromeDriver();
         MainPage mainPage = new MainPage(driver);
-        try {
-            driver.get("http://localhost:3000/");
 
-            List<WebElement> todoList = mainPage.getAllTodoItems();
-            Assert.assertTrue("There are nothing to edit in the List", todoList.size() > 0);
+        driver.get("http://localhost:3000/");
 
-            mainPage.editFirstTodo(todoList);
-            assertEquals(mainPage.getFirstElement().getText(), mainPage.EDIT_VALUE);
-        } finally {
-            driver.close();
-        }
+        List<WebElement> todoList = mainPage.getAllTodoItems();
+        Assert.assertTrue("There are nothing to edit in the List", todoList.size() > 0);
+
+        mainPage.editFirstTodo(todoList);
+        assertEquals(mainPage.getFirstElement().getText(), mainPage.EDIT_VALUE);
     }
 }

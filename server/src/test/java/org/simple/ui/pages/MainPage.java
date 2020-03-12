@@ -17,7 +17,7 @@ public class MainPage extends PageObject {
     public final String EDIT_VALUE = "EDITED-VALUE";
 
     static By todoItemSelector = By.xpath("//span[@class='todo-list-item']");
-    static By deleteButtonSelector = By.xpath("//button[@type='button']/i[@class='fa fa-trash-o']");
+    static By deleteButtonSelector = By.className("btn");
     static By editFirstButtonSelector = By.xpath("//button[@type='button']/i[@class='fa fa-edit']");
     static By editFinalButtonSelector = By.xpath("//form/button[@type='submit']");
     static By editFieldSelector = By.xpath("//form[@class='center-panel d-flex']/input[@type='text']");
@@ -34,8 +34,9 @@ public class MainPage extends PageObject {
         return getAllTodoItems().get(0);
     }
 
-    public void deleteFirstTodo(){
-        getAllTodoItems().get(0).findElement(deleteButtonSelector).click();
+    public void deleteLastTodo(){
+        List<WebElement> todoList = getAllTodoItems();
+        todoList.get(todoList.size() - 1).findElement(deleteButtonSelector).click();
     }
 
     public void editFirstTodo(List<WebElement> todoList){
