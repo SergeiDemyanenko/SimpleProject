@@ -25,7 +25,7 @@ matrix:
       jdk: oraclejdk8
 
       script:
-        - export HOST_IP=$(ifconfig docker0 | awk -F"[:, ]" '/inet addr:/ {print $3}')
+        - export HOST_IP=$(ifconfig docker0 | awk -F"[:, ]" '/inet/ {print $3}')
         - echo $HOST_IP
         - docker-compose -f ./docker/docker-compose.yaml up -d
         - . ./docker/wait-for-grid.sh
