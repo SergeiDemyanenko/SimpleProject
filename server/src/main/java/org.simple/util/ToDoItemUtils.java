@@ -16,4 +16,8 @@ public class ToDoItemUtils {
     public List<ToDoItem> getToDoList(){
         return this.toDoItemRepository.findAll();
     }
+
+    public List<ToDoItem> getToDoByGroupId(Integer group_id){
+        return this.toDoItemRepository.findBytoDoGroupId(group_id);
+    }
 }

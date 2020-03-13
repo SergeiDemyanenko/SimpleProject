@@ -16,6 +16,10 @@ public class ToDoItem implements Comparable<ToDoItem> {
     @Column(name = "TEXT")
     private String text;
 
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private ToDoGroup toDoGroup;
+
     public ToDoItem() {
     }
 

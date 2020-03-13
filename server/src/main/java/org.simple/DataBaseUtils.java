@@ -1,6 +1,8 @@
 package org.simple;
 
+import org.simple.entity.ToDoGroup;
 import org.simple.entity.ToDoItem;
+import org.simple.util.AutowiredForUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -104,40 +106,16 @@ public class DataBaseUtils {
         return todoListGroups;
     }
 
-    public static List<ToDoFormedGroup> getFormedGroup() throws SQLException {
-        List<ToDoItem> todoGroup = new ArrayList<>();
+    public static List<ToDoFormedGroup> getFormedGroup(){
         List<ToDoFormedGroup> toDoFormedGroups = new ArrayList<>();
 
-        Connection conn = getConnect();
-        Statement sql_stmt = conn.createStatement();
-        PreparedStatement stmt = conn.prepareStatement(
-                "SELECT tl.id, tl.text, tl.group_id, tg.group_name " +
-                "FROM todo_list tl " +
-                "LEFT JOIN todo_group tg ON " +
-                "tl.group_id = tg.id " +
-                "ORDER BY tl.group_id;");
-        ResultSet rset = stmt.executeQuery();
-
-        Integer previous_group_id = null;
-        String todoGroupName = null;
-        Integer todoGroupId = null;
-        while(rset.next()){
-            if(previous_group_id  == null){
-                previous_group_id = rset.getInt("todo_list.group_id");
-            }
-            if(rset.getInt("todo_list.group_id") == previous_group_id){
-                todoGroup.add(new ToDoItem(rset.getInt("todo_list.id"), rset.getString("todo_list.text")));
-                todoGroupName = rset.getString("todo_group.group_name");
-                todoGroupId = rset.getInt("todo_list.group_id");
-            }else {
-                toDoFormedGroups.add(new ToDoFormedGroup(todoGroupId, todoGroupName, todoGroup));
-                todoGroup = new ArrayList<>();
-                todoGroup.add(new ToDoItem(rset.getInt("todo_list.id"), rset.getString("todo_list.text")));
-                previous_group_id = rset.getInt("todo_list.group_id");
-            }
-            if(rset.isLast()){
-                toDoFormedGroups.add(new ToDoFormedGroup(todoGroupId, todoGroupName, todoGroup));
-            }
+        List<ToDoGroup> toDoGroups = AutowiredForUtils.getToDoGroupRepository().findAll();
+        for (ToDoGroup toDoGroup : toDoGroups) {
+            toDoFormedGroups.add(new ToDoFormedGroup(
+                    toDoGroup.getId(),
+                    toDoGroup.getGroup_name(),
+                    AutowiredForUtils.getToDoItemRepository().findBytoDoGroupId(toDoGroup.getId())
+            ));
         }
 
         return toDoFormedGroups;

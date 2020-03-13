@@ -1,6 +1,7 @@
 package org.simple;
 
 import org.simple.entity.ToDoItem;
+import org.simple.util.ToDoGroupUtils;
 import org.simple.util.ToDoItemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,9 @@ public class ToDoController {
     @Autowired
     private ToDoItemUtils todoItem;
 
+    @Autowired
+    private ToDoGroupUtils toDoGroupUtils;
+
     @RequestMapping("/api/list-obj")
     public List<ToDoItem> listObj() {
         return this.todoItem.getToDoList();
@@ -27,7 +31,7 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/list-group")
-    public List<ToDoFormedGroup> listGroup() throws SQLException {
+    public List<ToDoFormedGroup> listGroup(){
         return DataBaseUtils.getFormedGroup();
     }
 
