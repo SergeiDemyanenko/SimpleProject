@@ -1,6 +1,7 @@
 package org.simple;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import org.simple.entity.ToDoItem;
 
 import java.util.List;
 

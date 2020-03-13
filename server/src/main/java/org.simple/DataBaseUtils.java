@@ -1,5 +1,7 @@
 package org.simple;
 
+import org.simple.entity.ToDoItem;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;

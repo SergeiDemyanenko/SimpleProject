@@ -1,15 +1,24 @@
 package org.simple;
 
-import org.springframework.web.bind.annotation.*;
-import java.sql.*;
+import org.simple.entity.ToDoItem;
+import org.simple.util.ToDoItemUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 public class ToDoController {
 
+    @Autowired
+    private ToDoItemUtils todoItem;
+
     @RequestMapping("/api/list-obj")
-    public List<ToDoItem> listObj() throws SQLException {
-        return DataBaseUtils.getTodoListIT();
+    public List<ToDoItem> listObj() {
+        return this.todoItem.getToDoList();
     }
 
     @RequestMapping("/api/list")
