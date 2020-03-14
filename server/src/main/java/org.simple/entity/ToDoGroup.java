@@ -25,6 +25,10 @@ public class ToDoGroup {
     public ToDoGroup() {
     }
 
+    public ToDoGroup(Integer id) {
+        this.id = id;
+    }
+
     public ToDoGroup(Integer group_id, String group_name) {
         this.id = group_id;
         this.group_name = group_name;
