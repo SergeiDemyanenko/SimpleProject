@@ -67,16 +67,14 @@ public class ApiTest {
     @Test
     @Order(2)
     public void listTest() throws IOException {
-        assertEquals("[{\"id\":1,\"text\":\"go to settings\",\"toDoGroup\":{\"id\":2,\"group_name\":\"Group 2\"}}," +
-                "{\"id\":2,\"text\":\"go to online store\",\"toDoGroup\":{\"id\":1,\"group_name\":\"Group 1\"}}," +
-                "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\",\"toDoGroup\":{\"id\":1,\"group_name\":\"Group 1\"}}," +
-                "{\"id\":4,\"text\":\"change your home address\",\"toDoGroup\":{\"id\":2,\"group_name\":\"Group 2\"}}," +
-                "{\"id\":5,\"text\":\"save changes\",\"toDoGroup\":{\"id\":2,\"group_name\":\"Group 2\"}}," +
-                "{\"id\":6,\"text\":\"buy some goods\",\"toDoGroup\":{\"id\":1,\"group_name\":\"Group 1\"}}," +
-                "{\"id\":7,\"text\":\"go to shopping cart\",\"toDoGroup\":{\"id\":3,\"group_name\":\"Group 3\"}}," +
-                "{\"id\":8,\"text\":\"check your shopping cart\",\"toDoGroup\":{\"id\":1,\"group_name\":\"Group 1\"}}," +
-                "{\"id\":9,\"text\":\"finish shopping\",\"toDoGroup\":{\"id\":3,\"group_name\":\"Group 3\"}}]",
-                getResponse("/api/list-obj"));
+        assertEquals("[{\"id\":1,\"text\":\"go to settings\"},{\"id\":2,\"text\":\"go to online store\"}," +
+                "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
+                "{\"id\":4,\"text\":\"change your home address\"}," +
+                "{\"id\":5,\"text\":\"save changes\"}," +
+                "{\"id\":6,\"text\":\"buy some goods\"}," +
+                "{\"id\":7,\"text\":\"go to shopping cart\"}," +
+                "{\"id\":8,\"text\":\"check your shopping cart\"}," +
+                "{\"id\":9,\"text\":\"finish shopping\"}]", getResponse("/api/list-obj"));
     }
 
     @Test
@@ -118,25 +116,18 @@ public class ApiTest {
     @Order(6)
     public void listGroupTest() throws IOException, SQLException {
         assertEquals(
-                "[{\"group_id\":1,\"group_name\":\"Group 1\",\"todoFormedGroup\":[" +
-                        "{\"id\":2,\"text\":\"go to online store\",\"toDoGroup\":" +
-                        "{\"id\":1,\"group_name\":\"Group 1\"}}," +
-                        "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\",\"toDoGroup\":" +
-                        "{\"id\":1,\"group_name\":\"Group 1\"}}," +
-                        "{\"id\":6,\"text\":\"buy some goods\",\"toDoGroup\":" +
-                        "{\"id\":1,\"group_name\":\"Group 1\"}}," +
-                        "{\"id\":8,\"text\":\"check your shopping cart\",\"toDoGroup\":" +
-                        "{\"id\":1,\"group_name\":\"Group 1\"}}]}," +
-                        "{\"group_id\":2,\"group_name\":\"Group 2\",\"todoFormedGroup\":[" +
-                        "{\"id\":1,\"text\":\"go to settings\",\"toDoGroup\":" +
-                        "{\"id\":2,\"group_name\":\"Group 2\"}}," +
-                        "{\"id\":4,\"text\":\"change your home address\",\"toDoGroup\":" +
-                        "{\"id\":2,\"group_name\":\"Group 2\"}}," +
-                        "{\"id\":5,\"text\":\"save changes\",\"toDoGroup\":" +
-                        "{\"id\":2,\"group_name\":\"Group 2\"}}]}," +
-                        "{\"group_id\":3,\"group_name\":\"Group 3\",\"todoFormedGroup\":[" +
-                        "{\"id\":7,\"text\":\"go to shopping cart\",\"toDoGroup\":{\"id\":3,\"group_name\":\"Group 3\"}}," +
-                        "{\"id\":9,\"text\":\"finish shopping\",\"toDoGroup\":{\"id\":3,\"group_name\":\"Group 3\"}}]}]",
+                "[{\"id\":1,\"group_name\":\"Group 1\",\"toDoItems\":" +
+                            "[{\"id\":2,\"text\":\"go to online store\"}," +
+                            "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
+                            "{\"id\":6,\"text\":\"buy some goods\"}," +
+                            "{\"id\":8,\"text\":\"check your shopping cart\"}]}," +
+                        "{\"id\":2,\"group_name\":\"Group 2\",\"toDoItems\":" +
+                            "[{\"id\":1,\"text\":\"go to settings\"}," +
+                            "{\"id\":4,\"text\":\"change your home address\"}," +
+                            "{\"id\":5,\"text\":\"save changes\"}]}," +
+                        "{\"id\":3,\"group_name\":\"Group 3\",\"toDoItems\":" +
+                            "[{\"id\":7,\"text\":\"go to shopping cart\"}," +
+                            "{\"id\":9,\"text\":\"finish shopping\"}]}]",
                 getResponse("/api/list-group"));
     }
 }

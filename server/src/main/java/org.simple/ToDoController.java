@@ -1,8 +1,9 @@
 package org.simple;
 
+import org.simple.entity.ToDoGroup;
+import org.simple.entity.ToDoGroupRepository;
 import org.simple.entity.ToDoItem;
-import org.simple.util.ToDoGroupUtils;
-import org.simple.util.ToDoItemUtils;
+import org.simple.entity.ToDoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,14 +16,14 @@ import java.util.List;
 public class ToDoController {
 
     @Autowired
-    private ToDoItemUtils todoItem;
+    private ToDoItemRepository toDoItemRepository;
 
     @Autowired
-    private ToDoGroupUtils toDoGroupUtils;
+    private ToDoGroupRepository toDoGroupRepository;
 
     @RequestMapping("/api/list-obj")
     public List<ToDoItem> listObj() {
-        return this.todoItem.getToDoList();
+        return toDoItemRepository.findAll();
     }
 
     @RequestMapping("/api/list")
@@ -31,8 +32,8 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/list-group")
-    public List<ToDoFormedGroup> listGroup(){
-        return DataBaseUtils.getFormedGroup();
+    public List<ToDoGroup> listGroup(){
+        return toDoGroupRepository.findAllByOrderById();
     }
 
     @RequestMapping("/api/add")

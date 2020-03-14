@@ -2,7 +2,6 @@ package org.simple;
 
 import org.simple.entity.ToDoGroup;
 import org.simple.entity.ToDoItem;
-import org.simple.util.AutowiredForUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -104,20 +103,5 @@ public class DataBaseUtils {
         }
 
         return todoListGroups;
-    }
-
-    public static List<ToDoFormedGroup> getFormedGroup(){
-        List<ToDoFormedGroup> toDoFormedGroups = new ArrayList<>();
-
-        List<ToDoGroup> toDoGroups = AutowiredForUtils.getToDoGroupRepository().findAll();
-        for (ToDoGroup toDoGroup : toDoGroups) {
-            toDoFormedGroups.add(new ToDoFormedGroup(
-                    toDoGroup.getId(),
-                    toDoGroup.getGroup_name(),
-                    AutowiredForUtils.getToDoItemRepository().findBytoDoGroupId(toDoGroup.getId())
-            ));
-        }
-
-        return toDoFormedGroups;
     }
 }
