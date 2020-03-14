@@ -37,8 +37,8 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/add")
-    public ToDoItem add(@RequestParam String text, Integer group_id) throws SQLException {
-        return toDoItemRepository.save(new ToDoItem(text, new ToDoGroup(group_id)));
+    public ToDoItem add(@RequestParam String text) {
+        return toDoItemRepository.save(new ToDoItem(text));
     }
 
     @RequestMapping("/api/delete")

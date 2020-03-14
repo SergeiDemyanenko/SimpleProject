@@ -25,13 +25,12 @@ public class ToDoItem implements Comparable<ToDoItem> {
     public ToDoItem() {
     }
 
-    public ToDoItem(String text, ToDoGroup toDoGroup) {
-        this.text = text;
-        this.toDoGroup = toDoGroup;
-    }
-
     public ToDoItem(Integer id, String text) {
         this.id = id;
+        this.text = text;
+    }
+
+    public ToDoItem(String text) {
         this.text = text;
     }
 

@@ -88,9 +88,8 @@ public class ApiTest {
     @Order(3)
     public void addTest() throws SQLException, IOException, JSONException {
         final String TEST_VALUE = getClass().getName() + "_addTest";
-        final Integer TEST_GROUP_ID = 1;
 
-        String testToDoItemString = getResponse(String.format("/api/add?text=%s&group_id=%s", TEST_VALUE, TEST_GROUP_ID));
+        String testToDoItemString = getResponse(String.format("/api/add?text=%s", TEST_VALUE));
         JSONObject testToDoItemJSON = new JSONObject(testToDoItemString);
         testId = testToDoItemJSON.getInt("id");
 
