@@ -1,6 +1,7 @@
 package org.simple.entity;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 
@@ -13,8 +14,13 @@ public class ToDoItem implements Comparable<ToDoItem> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "TEXT")
+    @Column(name = "text")
     private String text;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "group_id")
+    private ToDoGroup toDoGroup;
 
     public ToDoItem() {
     }
