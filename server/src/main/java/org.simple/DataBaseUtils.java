@@ -1,5 +1,7 @@
 package org.simple;
 
+import org.simple.entity.ToDoItem;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -57,87 +59,5 @@ public class DataBaseUtils {
        }
 
        return todoList;
-    }
-
-    public static void deleteRecord(int id) throws SQLException {
-        Connection conn = getConnect();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM todo_list WHERE id = ?");
-        stmt.setInt(1, id);
-        stmt.execute();
-    }
-
-    public static void editRecord(int id, String text) throws SQLException {
-        Connection conn = getConnect();
-        PreparedStatement stmt = conn.prepareStatement("UPDATE todo_list SET text = ? WHERE id = ?");
-        stmt.setString(1, text);
-        stmt.setInt(2, id);
-        stmt.execute();
-    }
-
-    public static int addRecord(String text) throws SQLException {
-        Connection conn = getConnect();
-        String insert = "INSERT INTO TODO_LIST (text) VALUES (?)";
-        PreparedStatement stmt = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
-        stmt.setString(1, text);
-        stmt.executeUpdate();
-
-        ResultSet rs = stmt.getGeneratedKeys();
-        if (rs.next()) {
-            return rs.getInt(1);
-        } else {
-            throw new SQLException("can not get id for new record");
-        }
-    }
-
-    public static List<ToDoGroup> getTodoGroups() throws SQLException {
-        List<ToDoGroup> todoListGroups = new ArrayList<>();
-
-        Connection conn = getConnect();
-        Statement sql_stmt = conn.createStatement();
-        ResultSet rset = sql_stmt.executeQuery("SELECT id, group_name FROM todo_group ORDER BY id;");
-        while (rset.next()) {
-            todoListGroups.add(new ToDoGroup(rset.getInt("id"), rset.getString("group_name")));
-        }
-
-        return todoListGroups;
-    }
-
-    public static List<ToDoFormedGroup> getFormedGroup() throws SQLException {
-        List<ToDoItem> todoGroup = new ArrayList<>();
-        List<ToDoFormedGroup> toDoFormedGroups = new ArrayList<>();
-
-        Connection conn = getConnect();
-        Statement sql_stmt = conn.createStatement();
-        PreparedStatement stmt = conn.prepareStatement(
-                "SELECT tl.id, tl.text, tl.group_id, tg.group_name " +
-                "FROM todo_list tl " +
-                "LEFT JOIN todo_group tg ON " +
-                "tl.group_id = tg.id " +
-                "ORDER BY tl.group_id;");
-        ResultSet rset = stmt.executeQuery();
-
-        Integer previous_group_id = null;
-        String todoGroupName = null;
-        Integer todoGroupId = null;
-        while(rset.next()){
-            if(previous_group_id  == null){
-                previous_group_id = rset.getInt("todo_list.group_id");
-            }
-            if(rset.getInt("todo_list.group_id") == previous_group_id){
-                todoGroup.add(new ToDoItem(rset.getInt("todo_list.id"), rset.getString("todo_list.text")));
-                todoGroupName = rset.getString("todo_group.group_name");
-                todoGroupId = rset.getInt("todo_list.group_id");
-            }else {
-                toDoFormedGroups.add(new ToDoFormedGroup(todoGroupId, todoGroupName, todoGroup));
-                todoGroup = new ArrayList<>();
-                todoGroup.add(new ToDoItem(rset.getInt("todo_list.id"), rset.getString("todo_list.text")));
-                previous_group_id = rset.getInt("todo_list.group_id");
-            }
-            if(rset.isLast()){
-                toDoFormedGroups.add(new ToDoFormedGroup(todoGroupId, todoGroupName, todoGroup));
-            }
-        }
-
-        return toDoFormedGroups;
     }
 }

@@ -7,13 +7,21 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.junit.jupiter.api.*;
-import org.simple.utils.RunServer;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.simple.DataBaseUtils;
+import org.simple.utils.RunServer;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,10 +87,13 @@ public class ApiTest {
 
     @Test
     @Order(3)
-    public void addTest() throws SQLException, IOException {
+    public void addTest() throws SQLException, IOException, JSONException {
         final String TEST_VALUE = getClass().getName() + "_addTest";
 
-        testId = Integer.parseInt(getResponse(String.format("/api/add?text=%s", TEST_VALUE)));
+        String testToDoItemString = getResponse(String.format("/api/add?text=%s", TEST_VALUE));
+        JSONObject testToDoItemJSON = new JSONObject(testToDoItemString);
+        testId = testToDoItemJSON.getInt("id");
+
         ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
 
         assertTrue(String.format("There is no record with id = %d in SQL database", testId), resultSet.next());
@@ -92,19 +103,6 @@ public class ApiTest {
 
     @Test
     @Order(4)
-    public void editTest() throws IOException, SQLException {
-        final String TEST_VALUE = getClass().getName() + "_editTest";
-
-        getResponse(String.format("/api/edit?id=%d&text=%s", testId, TEST_VALUE));
-        ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
-
-        assertTrue(String.format("There is no records with id = %d in SQL database", testId), resultSet.next());
-        assertEquals(TEST_VALUE, resultSet.getString(2));
-        assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), resultSet.next());
-    }
-
-    @Test
-    @Order(5)
     public void deleteTest() throws IOException, SQLException {
         getResponse(String.format("/api/delete?id=%d", testId));
         ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
@@ -113,16 +111,39 @@ public class ApiTest {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     public void listGroupTest() throws IOException, SQLException {
         assertEquals(
-                "[{\"group_id\":1,\"group_name\":\"Group 1\",\"todoFormedGroup\":[{\"id\":2,\"text\":\"" +
-                        "go to online store\"},{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
-                        "{\"id\":6,\"text\":\"buy some goods\"},{\"id\":8,\"text\":\"check your shopping cart\"}]}," +
-                        "{\"group_id\":2,\"group_name\":\"Group 2\",\"todoFormedGroup\":[{\"id\":1,\"text\":\"" +
-                        "go to settings\"},{\"id\":4,\"text\":\"change your home address\"},{\"id\":5,\"text\":\"save changes\"}]}," +
-                        "{\"group_id\":3,\"group_name\":\"Group 3\",\"todoFormedGroup\":[{\"id\":7,\"text\":\"" +
-                        "go to shopping cart\"},{\"id\":9,\"text\":\"finish shopping\"}]}]",
+                "[{\"id\":1,\"group_name\":\"Group 1\",\"toDoItems\":" +
+                            "[{\"id\":2,\"text\":\"go to online store\"}," +
+                            "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
+                            "{\"id\":6,\"text\":\"buy some goods\"}," +
+                            "{\"id\":8,\"text\":\"check your shopping cart\"}]}," +
+                        "{\"id\":2,\"group_name\":\"Group 2\",\"toDoItems\":" +
+                            "[{\"id\":1,\"text\":\"go to settings\"}," +
+                            "{\"id\":4,\"text\":\"change your home address\"}," +
+                            "{\"id\":5,\"text\":\"save changes\"}]}," +
+                        "{\"id\":3,\"group_name\":\"Group 3\",\"toDoItems\":" +
+                            "[{\"id\":7,\"text\":\"go to shopping cart\"}," +
+                            "{\"id\":9,\"text\":\"finish shopping\"}]}]",
                 getResponse("/api/list-group"));
+    }
+
+    @Test
+    @Order(6)
+    public void editTest() throws IOException, SQLException, JSONException {
+        final String TEST_VALUE = getClass().getName() + "_editTest";
+
+        String testToDoGroupsString = getResponse("/api/list-group");
+        JSONArray testToDoGroupsJSON = new JSONArray(testToDoGroupsString);
+        JSONObject firstItem = testToDoGroupsJSON.getJSONObject(0).getJSONArray("toDoItems").getJSONObject(0);
+        testId = firstItem.getInt("id");
+
+        getResponse(String.format("/api/edit?id=%d&text=%s", testId, TEST_VALUE));
+        ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
+
+        assertTrue(String.format("There is no records with id = %d in SQL database", testId), resultSet.next());
+        assertEquals(TEST_VALUE, resultSet.getString(2));
+        assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), resultSet.next());
     }
 }
