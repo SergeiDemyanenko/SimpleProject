@@ -7,6 +7,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.MethodOrderer;
@@ -102,8 +103,13 @@ public class ApiTest {
 
     @Test
     @Order(4)
-    public void editTest() throws IOException, SQLException {
+    public void editTest() throws IOException, SQLException, JSONException {
         final String TEST_VALUE = getClass().getName() + "_editTest";
+
+        String testToDoGroupsString = getResponse("/api/list-group");
+        JSONArray testToDoGroupsJSON = new JSONArray(testToDoGroupsString);
+        JSONObject firstGroup = testToDoGroupsJSON.getJSONObject(0);
+        testId = firstGroup.getInt("id");
 
         getResponse(String.format("/api/edit?id=%d&text=%s", testId, TEST_VALUE));
         ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
