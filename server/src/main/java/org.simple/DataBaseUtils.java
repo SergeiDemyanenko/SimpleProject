@@ -1,13 +1,11 @@
 package org.simple;
 
-import org.simple.entity.ToDoItem;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Properties;
 
 public class DataBaseUtils {
@@ -36,28 +34,5 @@ public class DataBaseUtils {
         }
 
         return CONNECTION_INSTANCE;
-    }
-
-    public static List<ToDoItem> getTodoListIT() throws SQLException {
-        List<ToDoItem> todoListIT = new ArrayList<>();
-
-        Connection conn = getConnect();
-        Statement sql_stmt = conn.createStatement();
-        ResultSet rset = sql_stmt.executeQuery("SELECT id, text FROM todo_list order by id");
-        while (rset.next()) {
-            todoListIT.add(new ToDoItem(rset.getInt("id"), rset.getString("text")));
-        }
-
-        return todoListIT;
-    }
-
-    public static List<String> getTodoList() throws SQLException {
-        List<String> todoList = new ArrayList<>();
-
-       for (ToDoItem item : getTodoListIT()) {
-           todoList.add(item.getText());
-       }
-
-       return todoList;
     }
 }

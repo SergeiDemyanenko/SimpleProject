@@ -28,7 +28,7 @@ public class ToDoController {
 
     @RequestMapping("/api/list")
     public List<String> list() throws SQLException {
-        return DataBaseUtils.getTodoList();
+        return toDoItemRepository.getToDoItems();
     }
 
     @RequestMapping("/api/list-group")
