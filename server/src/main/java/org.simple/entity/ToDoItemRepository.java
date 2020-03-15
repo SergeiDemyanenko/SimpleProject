@@ -18,5 +18,5 @@ public interface ToDoItemRepository extends JpaRepository<ToDoItem, Long> {
     void deleteById(Integer id);
 
     @Query(value = "SELECT text FROM ToDoItem")
-    List<String> getToDoItems();
+    List<String> getToDoTexts();
 }
