@@ -47,8 +47,8 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/edit")
-    public void edit(@RequestParam String text, @RequestParam int id) throws SQLException {
-        DataBaseUtils.editRecord(id, text);
+    public void edit(@RequestParam String text, @RequestParam int id){
+        toDoItemRepository.save(new ToDoItem(id,text));
     }
 
     @RequestMapping("/api/hello")
