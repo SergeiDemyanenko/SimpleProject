@@ -1,6 +1,5 @@
 package org.simple;
 
-import org.simple.entity.ToDoGroup;
 import org.simple.entity.ToDoItem;
 
 import java.io.FileInputStream;
@@ -62,46 +61,11 @@ public class DataBaseUtils {
        return todoList;
     }
 
-    public static void deleteRecord(int id) throws SQLException {
-        Connection conn = getConnect();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM todo_list WHERE id = ?");
-        stmt.setInt(1, id);
-        stmt.execute();
-    }
-
     public static void editRecord(int id, String text) throws SQLException {
         Connection conn = getConnect();
         PreparedStatement stmt = conn.prepareStatement("UPDATE todo_list SET text = ? WHERE id = ?");
         stmt.setString(1, text);
         stmt.setInt(2, id);
         stmt.execute();
-    }
-
-    public static int addRecord(String text) throws SQLException {
-        Connection conn = getConnect();
-        String insert = "INSERT INTO TODO_LIST (text) VALUES (?)";
-        PreparedStatement stmt = conn.prepareStatement(insert, Statement.RETURN_GENERATED_KEYS);
-        stmt.setString(1, text);
-        stmt.executeUpdate();
-
-        ResultSet rs = stmt.getGeneratedKeys();
-        if (rs.next()) {
-            return rs.getInt(1);
-        } else {
-            throw new SQLException("can not get id for new record");
-        }
-    }
-
-    public static List<ToDoGroup> getTodoGroups() throws SQLException {
-        List<ToDoGroup> todoListGroups = new ArrayList<>();
-
-        Connection conn = getConnect();
-        Statement sql_stmt = conn.createStatement();
-        ResultSet rset = sql_stmt.executeQuery("SELECT id, group_name FROM todo_group ORDER BY id;");
-        while (rset.next()) {
-            todoListGroups.add(new ToDoGroup(rset.getInt("id"), rset.getString("group_name")));
-        }
-
-        return todoListGroups;
     }
 }

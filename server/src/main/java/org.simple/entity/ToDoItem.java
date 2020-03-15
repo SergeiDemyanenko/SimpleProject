@@ -30,6 +30,10 @@ public class ToDoItem implements Comparable<ToDoItem> {
         this.text = text;
     }
 
+    public ToDoItem(String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
     }

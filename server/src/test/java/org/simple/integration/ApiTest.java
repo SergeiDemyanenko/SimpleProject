@@ -7,13 +7,20 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.junit.jupiter.api.*;
-import org.simple.utils.RunServer;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.simple.DataBaseUtils;
+import org.simple.utils.RunServer;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -79,10 +86,13 @@ public class ApiTest {
 
     @Test
     @Order(3)
-    public void addTest() throws SQLException, IOException {
+    public void addTest() throws SQLException, IOException, JSONException {
         final String TEST_VALUE = getClass().getName() + "_addTest";
 
-        testId = Integer.parseInt(getResponse(String.format("/api/add?text=%s", TEST_VALUE)));
+        String testToDoItemString = getResponse(String.format("/api/add?text=%s", TEST_VALUE));
+        JSONObject testToDoItemJSON = new JSONObject(testToDoItemString);
+        testId = testToDoItemJSON.getInt("id");
+
         ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
 
         assertTrue(String.format("There is no record with id = %d in SQL database", testId), resultSet.next());

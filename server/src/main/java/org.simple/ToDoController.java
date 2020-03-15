@@ -37,13 +37,13 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/add")
-    public int add(@RequestParam String text) throws SQLException {
-        return DataBaseUtils.addRecord(text);
+    public ToDoItem add(@RequestParam String text) {
+        return toDoItemRepository.save(new ToDoItem(text));
     }
 
     @RequestMapping("/api/delete")
-    public void delete(@RequestParam int id) throws SQLException {
-        DataBaseUtils.deleteRecord(id);
+    public void delete(@RequestParam Integer id) throws SQLException {
+        toDoItemRepository.deleteById(id);
     }
 
     @RequestMapping("/api/edit")
