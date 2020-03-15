@@ -42,8 +42,8 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/delete")
-    public void delete(@RequestParam int id) throws SQLException {
-        DataBaseUtils.deleteRecord(id);
+    public void delete(@RequestParam Integer id) throws SQLException {
+        toDoItemRepository.deleteById(id);
     }
 
     @RequestMapping("/api/edit")
