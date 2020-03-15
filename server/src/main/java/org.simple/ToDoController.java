@@ -1,15 +1,29 @@
 package org.simple;
 
-import org.springframework.web.bind.annotation.*;
-import java.sql.*;
+import org.simple.entity.ToDoGroup;
+import org.simple.entity.ToDoGroupRepository;
+import org.simple.entity.ToDoItem;
+import org.simple.entity.ToDoItemRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 public class ToDoController {
 
+    @Autowired
+    private ToDoItemRepository toDoItemRepository;
+
+    @Autowired
+    private ToDoGroupRepository toDoGroupRepository;
+
     @RequestMapping("/api/list-obj")
-    public List<ToDoItem> listObj() throws SQLException {
-        return DataBaseUtils.getTodoListIT();
+    public List<ToDoItem> listObj() {
+        return toDoItemRepository.findAll();
     }
 
     @RequestMapping("/api/list")
@@ -18,8 +32,8 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/list-group")
-    public List<ToDoFormedGroup> listGroup() throws SQLException {
-        return DataBaseUtils.getFormedGroup();
+    public List<ToDoGroup> listGroup(){
+        return toDoGroupRepository.findAllByOrderById();
     }
 
     @RequestMapping("/api/add")
