@@ -145,6 +145,5 @@ public class ApiTest {
         assertTrue(String.format("There is no records with id = %d in SQL database", testId), resultSet.next());
         assertEquals(TEST_VALUE, resultSet.getString(2));
         assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), resultSet.next());
-
     }
 }
