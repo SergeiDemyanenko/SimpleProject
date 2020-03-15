@@ -61,13 +61,6 @@ public class DataBaseUtils {
        return todoList;
     }
 
-    public static void deleteRecord(int id) throws SQLException {
-        Connection conn = getConnect();
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM todo_list WHERE id = ?");
-        stmt.setInt(1, id);
-        stmt.execute();
-    }
-
     public static void editRecord(int id, String text) throws SQLException {
         Connection conn = getConnect();
         PreparedStatement stmt = conn.prepareStatement("UPDATE todo_list SET text = ? WHERE id = ?");
