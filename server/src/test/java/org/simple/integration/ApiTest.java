@@ -14,24 +14,28 @@ import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
-import org.simple.DataBaseUtils;
+import org.simple.entity.ToDoGroupRepository;
+import org.simple.entity.ToDoItem;
+import org.simple.entity.ToDoItemRepository;
 import org.simple.utils.RunServer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.util.AssertionErrors.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.springframework.test.util.AssertionErrors.assertNotNull;
 
 @RunServer
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ApiTest {
 
-    private static final String SQL_GET_TODO_LIST_BY_ID = "SELECT id, text FROM TODO_LIST WHERE id = ?";
+    @Autowired
+    private ToDoItemRepository toDoItemRepository;
+
+    @Autowired
+    private ToDoGroupRepository toDoGroupRepository;
 
     private static int testId;
 
@@ -55,17 +59,6 @@ public class ApiTest {
         return result;
     }
 
-    private ResultSet getResultSet(String sql, Object... params) throws SQLException {
-        Connection conn = DataBaseUtils.getConnect();
-        PreparedStatement stmt = conn.prepareStatement(sql);
-
-        for (int i = 0; i < params.length; i++) {
-            stmt.setObject(i + 1, params[i]);
-        }
-
-        return stmt.executeQuery();
-    }
-
     @Test
     @Order(1)
     public void helloTest() throws IOException {
@@ -87,32 +80,33 @@ public class ApiTest {
 
     @Test
     @Order(3)
-    public void addTest() throws SQLException, IOException, JSONException {
+    public void addTest() throws IOException, JSONException {
         final String TEST_VALUE = getClass().getName() + "_addTest";
 
         String testToDoItemString = getResponse(String.format("/api/add?text=%s", TEST_VALUE));
         JSONObject testToDoItemJSON = new JSONObject(testToDoItemString);
         testId = testToDoItemJSON.getInt("id");
 
-        ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
+        ToDoItem addedTodoItem = toDoItemRepository.findById(testId);
 
-        assertTrue(String.format("There is no record with id = %d in SQL database", testId), resultSet.next());
-        assertEquals(TEST_VALUE, resultSet.getString(2));
-        assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), resultSet.next());
+        assertEquals(TEST_VALUE, addedTodoItem.getText());
     }
 
     @Test
     @Order(4)
-    public void deleteTest() throws IOException, SQLException {
+    public void deleteTest() throws IOException {
         getResponse(String.format("/api/delete?id=%d", testId));
-        ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
+        ToDoItem deletedItem = toDoItemRepository.findById(testId);
 
-        assertFalse(String.format("There is no record with id = %d in SQL database", testId), resultSet.next());
+        assertThrows(NullPointerException.class,
+                () ->{
+            deletedItem.getText();
+                });
     }
 
     @Test
     @Order(5)
-    public void listGroupTest() throws IOException, SQLException {
+    public void listGroupTest() throws IOException {
         assertEquals(
                 "[{\"id\":1,\"group_name\":\"Group 1\",\"toDoItems\":" +
                             "[{\"id\":2,\"text\":\"go to online store\"}," +
@@ -131,7 +125,7 @@ public class ApiTest {
 
     @Test
     @Order(6)
-    public void editTest() throws IOException, SQLException, JSONException {
+    public void editTest() throws IOException, JSONException {
         final String TEST_VALUE = getClass().getName() + "_editTest";
 
         String testToDoGroupsString = getResponse("/api/list-group");
@@ -140,10 +134,8 @@ public class ApiTest {
         testId = firstItem.getInt("id");
 
         getResponse(String.format("/api/edit?id=%d&text=%s", testId, TEST_VALUE));
-        ResultSet resultSet = getResultSet(SQL_GET_TODO_LIST_BY_ID, testId);
+        ToDoItem editedToDoItem = toDoItemRepository.findById(testId);
 
-        assertTrue(String.format("There is no records with id = %d in SQL database", testId), resultSet.next());
-        assertEquals(TEST_VALUE, resultSet.getString(2));
-        assertFalse(String.format("There is more then one record with id = %d in SQL database", testId), resultSet.next());
+        assertEquals(TEST_VALUE, editedToDoItem.getText());
     }
 }
