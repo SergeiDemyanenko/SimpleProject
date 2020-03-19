@@ -24,8 +24,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.util.AssertionErrors.assertNotNull;
+import static org.springframework.test.util.AssertionErrors.assertNull;
 
 @RunServer
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -98,10 +98,7 @@ public class ApiTest {
         getResponse(String.format("/api/delete?id=%d", testId));
         ToDoItem deletedItem = toDoItemRepository.findById(testId);
 
-        assertThrows(NullPointerException.class,
-                () ->{
-            deletedItem.getText();
-                });
+        assertNull("TodoItem wasn`t delete", deletedItem);
     }
 
     @Test
