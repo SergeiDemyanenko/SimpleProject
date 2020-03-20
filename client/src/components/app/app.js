@@ -25,7 +25,9 @@ export default class App extends Component {
   }
 
   onItemAdded = (label) => {
-    axios.get(`/api/add?text=${label}`)
+    axios.post(`/api/add`, {
+        text: label
+    })
         .then(response => {
           this.setState((state) => {
             const item = this.createItem(label) ;
@@ -37,7 +39,10 @@ export default class App extends Component {
   };
 
   onItemEdited = ( id, label) => {
-    axios.get(`/api/edit?text=${label}&id=${id}`)
+    axios.patch(`/api/edit?text=${label}&id=${id}`, {
+        id: id,
+        text: label
+    })
         .then(response => {
           this.setState((state) => {
             const items = state.items.map((item) => {
@@ -55,7 +60,7 @@ export default class App extends Component {
   };
 
   onDelete = (id) => {
-    axios.get(`/api/delete?id=${id}`)
+    axios.delete(`/api/delete?id=${id}`)
         .then(response => {
           this.setState((state) => {
             const idx = state.items.findIndex((item) => item.id === id);
