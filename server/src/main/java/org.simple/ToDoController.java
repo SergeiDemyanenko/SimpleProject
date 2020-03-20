@@ -28,7 +28,7 @@ public class ToDoController {
 
     @RequestMapping("/api/list")
     public List<String> list() throws SQLException {
-        return DataBaseUtils.getTodoList();
+        return toDoItemRepository.getToDoTexts();
     }
 
     @RequestMapping("/api/list-group")
@@ -37,18 +37,18 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/add")
-    public int add(@RequestParam String text) throws SQLException {
-        return DataBaseUtils.addRecord(text);
+    public ToDoItem add(@RequestParam String text) {
+        return toDoItemRepository.save(new ToDoItem(text));
     }
 
     @RequestMapping("/api/delete")
-    public void delete(@RequestParam int id) throws SQLException {
-        DataBaseUtils.deleteRecord(id);
+    public void delete(@RequestParam Integer id) throws SQLException {
+        toDoItemRepository.deleteById(id);
     }
 
     @RequestMapping("/api/edit")
-    public void edit(@RequestParam String text, @RequestParam int id) throws SQLException {
-        DataBaseUtils.editRecord(id, text);
+    public void edit(@RequestParam String text, @RequestParam int id){
+        toDoItemRepository.save(new ToDoItem(id,text));
     }
 
     @RequestMapping("/api/hello")
