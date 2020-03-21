@@ -39,7 +39,7 @@ export default class App extends Component {
   };
 
   onItemEdited = ( id, label) => {
-    axios.patch(`/api/edit?text=${label}&id=${id}`, {
+    axios.patch(`/api/edit`, {
         id: id,
         text: label
     })
