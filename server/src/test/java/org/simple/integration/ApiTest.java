@@ -1,5 +1,7 @@
 package org.simple.integration;
 
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -7,9 +9,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.hamcrest.Matchers;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.junit.Before;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -58,6 +62,11 @@ public class ApiTest {
 
         return result;
     }
+    @Before
+    public void setup() {
+        RestAssured.baseURI = "http://localhost:";
+        RestAssured.port = randomServerPort;
+    }
 
     @Test
     @Order(1)
@@ -80,22 +89,34 @@ public class ApiTest {
 
     @Test
     @Order(3)
-    public void addTest() throws IOException, JSONException {
+    public void addTest() throws JSONException {
         final String TEST_VALUE = getClass().getName() + "_addTest";
 
-        String testToDoItemString = getResponse(String.format("/api/add?text=%s", TEST_VALUE));
-        JSONObject testToDoItemJSON = new JSONObject(testToDoItemString);
-        testId = testToDoItemJSON.getInt("id");
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("text", TEST_VALUE);
 
-        ToDoItem addedTodoItem = toDoItemRepository.findById(testId);
-
-        assertEquals(TEST_VALUE, addedTodoItem.getText());
+        RestAssured.given()
+                .port(randomServerPort)
+                .contentType(ContentType.JSON)
+                .body(requestParams.toString())
+                .when()
+                .post("/api/add")
+                .then()
+                .body("text", Matchers.equalTo(TEST_VALUE));
     }
 
     @Test
     @Order(4)
-    public void deleteTest() throws IOException {
-        getResponse(String.format("/api/delete?id=%d", testId));
+    public void deleteTest() throws JSONException {
+
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("id", testId);
+
+        RestAssured.given()
+                .port(randomServerPort)
+                .body(requestParams.toString())
+                .delete("api/delete");
+
         ToDoItem deletedItem = toDoItemRepository.findById(testId);
 
         assertNull("TodoItem wasn`t delete", deletedItem);
@@ -106,17 +127,17 @@ public class ApiTest {
     public void listGroupTest() throws IOException {
         assertEquals(
                 "[{\"id\":1,\"group_name\":\"Group 1\",\"toDoItems\":" +
-                            "[{\"id\":2,\"text\":\"go to online store\"}," +
-                            "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
-                            "{\"id\":6,\"text\":\"buy some goods\"}," +
-                            "{\"id\":8,\"text\":\"check your shopping cart\"}]}," +
+                        "[{\"id\":2,\"text\":\"go to online store\"}," +
+                        "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
+                        "{\"id\":6,\"text\":\"buy some goods\"}," +
+                        "{\"id\":8,\"text\":\"check your shopping cart\"}]}," +
                         "{\"id\":2,\"group_name\":\"Group 2\",\"toDoItems\":" +
-                            "[{\"id\":1,\"text\":\"go to settings\"}," +
-                            "{\"id\":4,\"text\":\"change your home address\"}," +
-                            "{\"id\":5,\"text\":\"save changes\"}]}," +
+                        "[{\"id\":1,\"text\":\"go to settings\"}," +
+                        "{\"id\":4,\"text\":\"change your home address\"}," +
+                        "{\"id\":5,\"text\":\"save changes\"}]}," +
                         "{\"id\":3,\"group_name\":\"Group 3\",\"toDoItems\":" +
-                            "[{\"id\":7,\"text\":\"go to shopping cart\"}," +
-                            "{\"id\":9,\"text\":\"finish shopping\"}]}]",
+                        "[{\"id\":7,\"text\":\"go to shopping cart\"}," +
+                        "{\"id\":9,\"text\":\"finish shopping\"}]}]",
                 getResponse("/api/list-group"));
     }
 
@@ -130,7 +151,18 @@ public class ApiTest {
         JSONObject firstItem = testToDoGroupsJSON.getJSONObject(0).getJSONArray("toDoItems").getJSONObject(0);
         testId = firstItem.getInt("id");
 
-        getResponse(String.format("/api/edit?id=%d&text=%s", testId, TEST_VALUE));
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("id", testId);
+        requestParams.put("text", TEST_VALUE);
+        System.out.println(requestParams.toString());
+
+        RestAssured.given()
+                .port(randomServerPort)
+                .contentType(ContentType.JSON)
+                .body(requestParams.toString())
+                .when()
+                .patch("api/edit");
+
         ToDoItem editedToDoItem = toDoItemRepository.findById(testId);
 
         assertEquals(TEST_VALUE, editedToDoItem.getText());

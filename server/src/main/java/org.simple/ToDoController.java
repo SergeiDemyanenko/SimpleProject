@@ -5,11 +5,8 @@ import org.simple.entity.ToDoGroupRepository;
 import org.simple.entity.ToDoItem;
 import org.simple.entity.ToDoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -27,7 +24,7 @@ public class ToDoController {
     }
 
     @RequestMapping("/api/list")
-    public List<String> list() throws SQLException {
+    public List<String> list() {
         return toDoItemRepository.getToDoTexts();
     }
 
@@ -36,19 +33,19 @@ public class ToDoController {
         return toDoGroupRepository.findAllByOrderById();
     }
 
-    @RequestMapping("/api/add")
-    public ToDoItem add(@RequestParam String text) {
-        return toDoItemRepository.save(new ToDoItem(text));
+    @RequestMapping(value = "/api/add", method = RequestMethod.POST)
+    public ToDoItem add(@RequestBody ToDoItem toDoItem) {
+        return toDoItemRepository.save(toDoItem);
     }
 
-    @RequestMapping("/api/delete")
-    public void delete(@RequestParam Integer id) throws SQLException {
+    @RequestMapping(value = "/api/delete", method = RequestMethod.DELETE)
+    public void delete(@RequestParam Integer id) {
         toDoItemRepository.deleteById(id);
     }
 
-    @RequestMapping("/api/edit")
-    public void edit(@RequestParam String text, @RequestParam int id){
-        toDoItemRepository.save(new ToDoItem(id,text));
+    @RequestMapping(value = "/api/edit", method = RequestMethod.PATCH)
+    public void edit(@RequestBody ToDoItem toDoItem){
+        toDoItemRepository.save(toDoItem);
     }
 
     @RequestMapping("/api/hello")
