@@ -16,6 +16,9 @@ public class User implements Comparable<User> {
     @Column(name = "login")
     private String login;
 
+    @Column(name = "password")
+    private String password;
+
     @Override
     public int compareTo(User user) {
         return 0;
