@@ -1,4 +1,4 @@
-package org.simple.entity;
+package org.simple.entity.ToDoGroup;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

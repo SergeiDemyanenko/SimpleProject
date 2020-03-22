@@ -1,4 +1,4 @@
-package org.simple.entity;
+package org.simple.entity.User;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

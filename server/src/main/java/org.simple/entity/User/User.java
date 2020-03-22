@@ -1,4 +1,4 @@
-package org.simple.entity;
+package org.simple.entity.User;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 

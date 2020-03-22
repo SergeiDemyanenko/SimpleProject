@@ -1,4 +1,4 @@
-package org.simple.entity;
+package org.simple.entity.ToDoItem;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +17,6 @@ public interface ToDoItemRepository extends JpaRepository<ToDoItem, Long> {
     @Transactional
     void deleteById(Integer id);
 
-    @Query(value = "SELECT text FROM ToDoItem")
+    @Query(value = "SELECT text FROM org.simple.entity.ToDoItem.ToDoItem")
     List<String> getToDoTexts();
 }
