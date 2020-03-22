@@ -1,6 +1,7 @@
-package org.simple.entity;
+package org.simple.entity.ToDoGroup;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import org.simple.entity.ToDoItem.ToDoItem;
 
 import javax.persistence.*;
 import java.util.List;

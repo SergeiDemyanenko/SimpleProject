@@ -1,9 +1,9 @@
 package org.simple;
 
-import org.simple.entity.ToDoGroup;
-import org.simple.entity.ToDoGroupRepository;
-import org.simple.entity.ToDoItem;
-import org.simple.entity.ToDoItemRepository;
+import org.simple.entity.ToDoGroup.ToDoGroup;
+import org.simple.entity.ToDoGroup.ToDoGroupRepository;
+import org.simple.entity.ToDoItem.ToDoItem;
+import org.simple.entity.ToDoItem.ToDoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
