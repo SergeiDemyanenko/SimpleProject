@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/textReviewLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textReviewView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textAlignment="viewStart"
+        android:textSize="30sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_weight="1"
+        tools:layout_editor_absoluteX="101dp"
+        tools:layout_editor_absoluteY="223dp" />
+
+
+    <Button
+        android:id="@+id/edit_button"
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:layout_marginTop="10sp"
+        android:background="#ffff00"
+        android:onClick="editItem"
+        android:text="@string/button_edit"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@id/textReviewView"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+    <Button
+        android:id="@+id/delete_button"
+        android:layout_width="match_parent"
+        android:layout_height="60sp"
+        android:layout_marginTop="10sp"
+        android:background="#ff1a38"
+        android:onClick="deleteItem"
+        android:text="@string/button_delete"
+        android:textSize="30sp"
+        app:layout_constraintTop_toBottomOf="@id/edit_button"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
