@@ -18,37 +18,52 @@ public class ToDoController {
     @Autowired
     private ToDoGroupRepository toDoGroupRepository;
 
-    @RequestMapping("/api/list-obj")
+    @RequestMapping(method = RequestMethod.GET, value = "/api/list-obj")
     public List<ToDoItem> listObj() {
         return toDoItemRepository.findAll();
     }
 
-    @RequestMapping("/api/list")
+    @RequestMapping(method = RequestMethod.GET, value = "/api/list")
     public List<String> list() {
         return toDoItemRepository.getToDoTexts();
     }
 
-    @RequestMapping("/api/list-group")
+    @RequestMapping(method = RequestMethod.GET, value = "/api/list-group")
     public List<ToDoGroup> listGroup(){
         return toDoGroupRepository.findAllByOrderById();
     }
 
-    @RequestMapping(value = "/api/add", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, value = "/api/add")
     public ToDoItem add(@RequestBody ToDoItem toDoItem) {
         return toDoItemRepository.save(toDoItem);
     }
 
-    @RequestMapping(value = "/api/delete", method = RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE, value = "/api/delete")
     public void delete(@RequestParam Integer id) {
         toDoItemRepository.deleteById(id);
     }
 
-    @RequestMapping(value = "/api/edit", method = RequestMethod.PATCH)
+    @RequestMapping(method = RequestMethod.PATCH, value = "/api/edit")
     public void edit(@RequestBody ToDoItem toDoItem){
         toDoItemRepository.save(toDoItem);
     }
 
-    @RequestMapping("/api/hello")
+    @RequestMapping(method = RequestMethod.POST, value = "/api/addGroup")
+    public ToDoGroup addGroup(@RequestBody ToDoGroup toDoGroup){
+        return toDoGroupRepository.save(toDoGroup);
+    }
+
+    @RequestMapping(method = RequestMethod.PATCH, value = "api/editGroup")
+    public void editGroup(@RequestBody ToDoGroup toDoGroup){
+        toDoGroupRepository.save(toDoGroup);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "api/deleteGroup")
+    public void deleteGroup(@RequestParam Integer id){
+        toDoGroupRepository.deleteById(id);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/api/hello")
     public String hello() {
             return "hello";
     }
