@@ -22,6 +22,11 @@ public class ToDoItem implements Comparable<ToDoItem> {
     @JoinColumn(name = "group_id")
     private ToDoGroup toDoGroup;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
     public ToDoItem() {
     }
 
