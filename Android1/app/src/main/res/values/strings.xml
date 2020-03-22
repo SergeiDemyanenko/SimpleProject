@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">MySuperToDoApplication</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">SAVE</string>
+    <string name="title_activity_display_message">My new toDo item</string>
+    <string name="title">My ToDo Application</string>
+    <string name="button_add">ADD</string>
+    <string name="button_edit">EDIT</string>
+    <string name="button_delete">DELETE</string>
+    <string name="title_activity_edit_item">Rewiev your plans</string>
+
+</resources>
