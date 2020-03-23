@@ -45,10 +45,10 @@ public class ItemReview extends AppCompatActivity {
 
             try {
                 String textOfEditItem = data.getStringExtra(MainActivity.NEW_ITEM_TEXT);
-                MainActivity.taskList.set(itemId, textOfEditItem);
+                ToDOAdapter.taskList.set(itemId, textOfEditItem);
                 //          adapter.add(textOfNewItem);
                 textView.setText(textOfEditItem);
-                MainActivity.adapter.notifyDataSetChanged();
+                ToDOAdapter.adapter.notifyDataSetChanged();
             } catch (NullPointerException e) {
             }
         } else {
@@ -59,8 +59,8 @@ public class ItemReview extends AppCompatActivity {
 
     public void deleteItem(View view) {
 
-        MainActivity.taskList.remove(itemId);
-        MainActivity.adapter.notifyDataSetChanged();
+        ToDOAdapter.taskList.remove(itemId);
+        ToDOAdapter.adapter.notifyDataSetChanged();
         finish();
 
     }
