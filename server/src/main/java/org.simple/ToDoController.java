@@ -39,13 +39,13 @@ public class ToDoController {
     }
 
     @RequestMapping(value = "/api/delete", method = RequestMethod.DELETE)
-    public void delete(@RequestParam Integer id) {
+    public void delete(@RequestParam Long id) {
         toDoItemRepository.deleteById(id);
     }
 
     @RequestMapping(value = "/api/edit", method = RequestMethod.PATCH)
-    public void edit(@RequestBody ToDoItem toDoItem){
-        toDoItemRepository.save(toDoItem);
+    public ToDoItem edit(@RequestBody ToDoItem toDoItem){
+        return toDoItemRepository.save(toDoItem);
     }
 
     @RequestMapping("/api/hello")

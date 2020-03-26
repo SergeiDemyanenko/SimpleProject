@@ -13,21 +13,32 @@ public class ToDoGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "group_name")
-    private String group_name;
+    private String groupName;
 
     @OneToMany
     @JoinColumn(name = "group_id")
     @OrderBy("id")
     private List<ToDoItem> toDoItems;
 
-    public ToDoGroup() {
+    public ToDoGroup() {}
+
+    public ToDoGroup(Long id, String groupName) {
+        this.id = id;
+        this.groupName = groupName;
     }
 
-    public ToDoGroup(Integer group_id, String group_name) {
-        this.id = group_id;
-        this.group_name = group_name;
+    public Long getId() {
+        return id;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public List<ToDoItem> getToDoItems() {
+        return toDoItems;
     }
 }
