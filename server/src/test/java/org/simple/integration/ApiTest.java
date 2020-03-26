@@ -2,6 +2,8 @@ package org.simple.integration;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.matcher.ResponseAwareMatcher;
+import io.restassured.response.Response;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -9,6 +11,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +44,7 @@ public class ApiTest {
     @Autowired
     private ToDoGroupRepository toDoGroupRepository;
 
-    private static int testId;
+    private static long testId;
 
     @LocalServerPort
     private int randomServerPort;
@@ -62,6 +65,7 @@ public class ApiTest {
 
         return result;
     }
+
     @Before
     public void setup() {
         RestAssured.baseURI = "http://localhost:";
@@ -102,7 +106,9 @@ public class ApiTest {
                 .when()
                 .post("/api/add")
                 .then()
-                .body("text", Matchers.equalTo(TEST_VALUE));
+                .body("text", Matchers.equalTo(TEST_VALUE))
+                .body("id", response -> Matchers.equalTo(toDoItemRepository.findById(
+                                response.body().<Integer>path("id").longValue()).get().getId().intValue()));
     }
 
     @Test
@@ -117,25 +123,23 @@ public class ApiTest {
                 .body(requestParams.toString())
                 .delete("api/delete");
 
-        ToDoItem deletedItem = toDoItemRepository.findById(testId);
-
-        assertNull("TodoItem wasn`t delete", deletedItem);
+        assertNull("TodoItem wasn`t delete", toDoItemRepository.findById(testId).orElse(null));
     }
 
     @Test
     @Order(5)
     public void listGroupTest() throws IOException {
         assertEquals(
-                "[{\"id\":1,\"group_name\":\"Group 1\",\"toDoItems\":" +
+                "[{\"id\":1,\"groupName\":\"Group 1\",\"toDoItems\":" +
                         "[{\"id\":2,\"text\":\"go to online store\"}," +
                         "{\"id\":3,\"text\":\"delete unwanted items from your shopping cart\"}," +
                         "{\"id\":6,\"text\":\"buy some goods\"}," +
                         "{\"id\":8,\"text\":\"check your shopping cart\"}]}," +
-                        "{\"id\":2,\"group_name\":\"Group 2\",\"toDoItems\":" +
+                        "{\"id\":2,\"groupName\":\"Group 2\",\"toDoItems\":" +
                         "[{\"id\":1,\"text\":\"go to settings\"}," +
                         "{\"id\":4,\"text\":\"change your home address\"}," +
                         "{\"id\":5,\"text\":\"save changes\"}]}," +
-                        "{\"id\":3,\"group_name\":\"Group 3\",\"toDoItems\":" +
+                        "{\"id\":3,\"groupName\":\"Group 3\",\"toDoItems\":" +
                         "[{\"id\":7,\"text\":\"go to shopping cart\"}," +
                         "{\"id\":9,\"text\":\"finish shopping\"}]}]",
                 getResponse("/api/list-group"));
@@ -163,7 +167,7 @@ public class ApiTest {
                 .when()
                 .patch("api/edit");
 
-        ToDoItem editedToDoItem = toDoItemRepository.findById(testId);
+        ToDoItem editedToDoItem = toDoItemRepository.findById(testId).get();
 
         assertEquals(TEST_VALUE, editedToDoItem.getText());
     }

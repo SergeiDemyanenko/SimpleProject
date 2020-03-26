@@ -10,13 +10,12 @@ import javax.persistence.*;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "todo_list")
-public class ToDoItem implements Comparable<ToDoItem> {
+public class ToDoItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
-    @Column(name = "text")
     private String text;
 
     @JsonIgnore
@@ -29,10 +28,9 @@ public class ToDoItem implements Comparable<ToDoItem> {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public ToDoItem() {
-    }
+    public ToDoItem() {}
 
-    public ToDoItem(Integer id, String text) {
+    public ToDoItem(Long id, String text) {
         this.id = id;
         this.text = text;
     }
@@ -41,12 +39,11 @@ public class ToDoItem implements Comparable<ToDoItem> {
         this.text = text;
     }
 
-    public String getText() {
-        return text;
+    public Long getId() {
+        return id;
     }
 
-    @Override
-    public int compareTo(ToDoItem toDoItem) {
-        return 0;
+    public String getText() {
+        return text;
     }
 }
