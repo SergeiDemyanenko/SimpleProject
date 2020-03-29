@@ -7,10 +7,14 @@ import org.simple.entity.ToDoItem.ToDoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-public class ToDoController {
+@RequestMapping("/api/")
+public class Controller {
 
     @Autowired
     private ToDoItemRepository toDoItemRepository;
@@ -18,38 +22,49 @@ public class ToDoController {
     @Autowired
     private ToDoGroupRepository toDoGroupRepository;
 
-    @RequestMapping("/api/list-obj")
+    @RequestMapping("list-obj")
     public List<ToDoItem> listObj() {
         return toDoItemRepository.findAll();
     }
 
-    @RequestMapping("/api/list")
+    @RequestMapping("list")
     public List<String> list() {
         return toDoItemRepository.getToDoTexts();
     }
 
-    @RequestMapping("/api/list-group")
+    @RequestMapping("list-group")
     public List<ToDoGroup> listGroup(){
         return toDoGroupRepository.findAllByOrderById();
     }
 
-    @RequestMapping(value = "/api/add", method = RequestMethod.POST)
+    @RequestMapping(value = "add", method = RequestMethod.POST)
     public ToDoItem add(@RequestBody ToDoItem toDoItem) {
         return toDoItemRepository.save(toDoItem);
     }
 
-    @RequestMapping(value = "/api/delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "delete", method = RequestMethod.DELETE)
     public void delete(@RequestParam Long id) {
         toDoItemRepository.deleteById(id);
     }
 
-    @RequestMapping(value = "/api/edit", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/edit", method = RequestMethod.PATCH)
     public ToDoItem edit(@RequestBody ToDoItem toDoItem){
         return toDoItemRepository.save(toDoItem);
     }
 
-    @RequestMapping("/api/hello")
+    @RequestMapping("hello")
     public String hello() {
-            return "hello";
+        return "hello";
+    }
+
+    @RequestMapping("login")
+    public void getLogin(@RequestBody(required = false) Map<String, String> parameters,
+                         HttpServletRequest request, HttpServletResponse response) {
+        Object userName = request.getSession().getAttribute(AuthorizationInterceptor.USER_PARAM);
+        if (userName == null) {
+            request.getSession().setAttribute(AuthorizationInterceptor.USER_PARAM, "user");
+        }
+
+        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
