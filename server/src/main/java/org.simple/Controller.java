@@ -13,8 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping(Controller.API_PREFIX)
 public class Controller {
+
+    public static final String API_PREFIX = "/api";
+    public static final String LOGIN = "/login";
 
     @Autowired
     private ToDoItemRepository toDoItemRepository;
@@ -22,27 +25,27 @@ public class Controller {
     @Autowired
     private ToDoGroupRepository toDoGroupRepository;
 
-    @RequestMapping("list-obj")
+    @RequestMapping("/list-obj")
     public List<ToDoItem> listObj() {
         return toDoItemRepository.findAll();
     }
 
-    @RequestMapping("list")
+    @RequestMapping("/list")
     public List<String> list() {
         return toDoItemRepository.getToDoTexts();
     }
 
-    @RequestMapping("list-group")
+    @RequestMapping("/list-group")
     public List<ToDoGroup> listGroup(){
         return toDoGroupRepository.findAllByOrderById();
     }
 
-    @RequestMapping(value = "add", method = RequestMethod.POST)
+    @RequestMapping(value = "/add", method = RequestMethod.POST)
     public ToDoItem add(@RequestBody ToDoItem toDoItem) {
         return toDoItemRepository.save(toDoItem);
     }
 
-    @RequestMapping(value = "delete", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public void delete(@RequestParam Long id) {
         toDoItemRepository.deleteById(id);
     }
@@ -52,12 +55,12 @@ public class Controller {
         return toDoItemRepository.save(toDoItem);
     }
 
-    @RequestMapping("hello")
+    @RequestMapping("/hello")
     public String hello() {
         return "hello";
     }
 
-    @RequestMapping("login")
+    @RequestMapping(LOGIN)
     public void getLogin(@RequestBody(required = false) Map<String, String> parameters,
                          HttpServletRequest request, HttpServletResponse response) {
         Object userName = request.getSession().getAttribute(AuthorizationInterceptor.USER_PARAM);

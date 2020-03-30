@@ -24,9 +24,9 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
         if (Boolean.TRUE.equals(authorizationEnabled)
                 && request.getSession().getAttribute(USER_PARAM) == null
-                && !request.getRequestURI().equals("/login") && !request.getRequestURI().equals("/api/login"))
+                && !request.getRequestURI().equals(Controller.LOGIN) && !request.getRequestURI().equals(Controller.API_PREFIX + Controller.LOGIN))
         {
-            if (authorizationRedirect == null) {
+            if (request.getRequestURI().startsWith(Controller.API_PREFIX)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return false;
             } else {
