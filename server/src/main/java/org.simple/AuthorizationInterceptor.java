@@ -16,7 +16,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
     @Value("${application.authorization.enabled}")
     private Boolean authorizationEnabled;
 
-    @Value("${application.authorization.redirect:#{null}}")
+    @Value("${application.authorization.redirect}")
     private String authorizationRedirect;
 
     @Override
@@ -24,7 +24,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
         if (Boolean.TRUE.equals(authorizationEnabled)
                 && request.getSession().getAttribute(USER_PARAM) == null
-                && !request.getRequestURI().equals(Controller.LOGIN) && !request.getRequestURI().equals(Controller.API_PREFIX + Controller.LOGIN))
+                && !request.getRequestURI().equals(authorizationRedirect)
+                && !request.getRequestURI().equals(Controller.API_PREFIX + Controller.LOGIN))
         {
             if (request.getRequestURI().startsWith(Controller.API_PREFIX)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
