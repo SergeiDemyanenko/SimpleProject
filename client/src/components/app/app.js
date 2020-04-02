@@ -30,7 +30,7 @@ export default class App extends Component {
     })
         .then(response => {
           this.setState((state) => {
-            const item = this.createItem(label) ;
+            const item = this.createItem(response.data.id, label) ;
             return { items: [...state.items, item] };
           });
         }).catch(error => {
@@ -86,9 +86,9 @@ export default class App extends Component {
     });
   };
 
-  createItem(label) {
+  createItem(id, label) {
     return {
-      id: this.state.items.length,
+      id,
       label,
       important: false,
       done: false
