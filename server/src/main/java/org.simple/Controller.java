@@ -4,6 +4,8 @@ import org.simple.entity.ToDoGroup.ToDoGroup;
 import org.simple.entity.ToDoGroup.ToDoGroupRepository;
 import org.simple.entity.ToDoItem.ToDoItem;
 import org.simple.entity.ToDoItem.ToDoItemRepository;
+import org.simple.entity.User.User;
+import org.simple.entity.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +26,9 @@ public class Controller {
 
     @Autowired
     private ToDoGroupRepository toDoGroupRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @RequestMapping("/list-obj")
     public List<ToDoItem> listObj() {
@@ -69,5 +74,15 @@ public class Controller {
         }
 
         response.setStatus(HttpServletResponse.SC_OK);
+    }
+
+    @RequestMapping(value = "/signUp", method = RequestMethod.POST)
+    public String signUp(@RequestBody User user){
+        if(userRepository.findByLogin(user.getLogin()).size() == 0){
+            userRepository.save(user);
+            return "Registration is success";
+        }else{
+            return "User already exist";
+        }
     }
 }
