@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(Controller.API_PREFIX)
@@ -66,14 +65,19 @@ public class Controller {
     }
 
     @RequestMapping(LOGIN)
-    public void getLogin(@RequestBody(required = false) Map<String, String> parameters,
-                         HttpServletRequest request, HttpServletResponse response) {
-        Object userName = request.getSession().getAttribute(AuthorizationInterceptor.USER_PARAM);
-        if (userName == null) {
-            request.getSession().setAttribute(AuthorizationInterceptor.USER_PARAM, "user");
+    public String getLogin(@RequestBody User user,
+                         HttpServletRequest request, HttpServletResponse response){
+        if(userRepository.findByLogin(user.getLogin()).size() != 0){
+            if(userRepository.findByLogin(user.getLogin()).get(0).getPassword().equals(user.getPassword())){
+                request.getSession().setAttribute(AuthorizationInterceptor.USER_PARAM, "user");
+            }else{
+                return "Password is incorrect";
+            }
+        }else{
+            return "User is not exist.";
         }
-
         response.setStatus(HttpServletResponse.SC_OK);
+        return "Login is success";
     }
 
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
