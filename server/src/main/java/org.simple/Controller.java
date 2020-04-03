@@ -7,6 +7,7 @@ import org.simple.entity.ToDoItem.ToDoItemRepository;
 import org.simple.entity.User.User;
 import org.simple.entity.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +29,9 @@ public class Controller {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @RequestMapping("/list-obj")
     public List<ToDoItem> listObj() {
@@ -68,7 +72,7 @@ public class Controller {
     public String getLogin(@RequestBody User user,
                          HttpServletRequest request, HttpServletResponse response){
         if(userRepository.findByLogin(user.getLogin()).size() != 0){
-            if(userRepository.findByLogin(user.getLogin()).get(0).getPassword().equals(user.getPassword())){
+            if(passwordEncoder.matches(user.getPassword(), userRepository.findByLogin(user.getLogin()).get(0).getPassword())){
                 request.getSession().setAttribute(AuthorizationInterceptor.USER_PARAM, "user");
             }else{
                 return "Password is incorrect";
@@ -83,7 +87,9 @@ public class Controller {
     @RequestMapping(value = "/signUp", method = RequestMethod.POST)
     public String signUp(@RequestBody User user){
         if(userRepository.findByLogin(user.getLogin()).size() == 0){
-            userRepository.save(user);
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+
+            userRepository.save(new User(user.getLogin(), encodedPassword ));
             return "Registration is success";
         }else{
             return "User already exist";
