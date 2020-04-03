@@ -2,8 +2,6 @@ package org.simple.integration;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.matcher.ResponseAwareMatcher;
-import io.restassured.response.Response;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -11,16 +9,12 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.simple.entity.ToDoGroup.ToDoGroupRepository;
 import org.simple.entity.ToDoItem.ToDoItem;
 import org.simple.entity.ToDoItem.ToDoItemRepository;
@@ -49,6 +43,18 @@ public class ApiTest {
     @LocalServerPort
     private int randomServerPort;
 
+    private JSONObject getUserLoginAndPassword() throws JSONException {
+        JSONObject userLoginAndPassword = new JSONObject();
+
+        String testLogin = "signUpTestLogin";
+        String testPassword = "signUpTestPassword";
+
+        userLoginAndPassword.put("login", testLogin);
+        userLoginAndPassword.put("password", testPassword);
+
+        return userLoginAndPassword;
+    }
+
     private String getResponse(String uri) throws IOException {
         String result;
 
@@ -70,6 +76,34 @@ public class ApiTest {
     public void setup() {
         RestAssured.baseURI = "http://localhost:";
         RestAssured.port = randomServerPort;
+    }
+
+    @Test
+    @Order(0)
+    public void signUp() throws JSONException {
+        RestAssured.given()
+                .port(randomServerPort)
+                .contentType(ContentType.JSON)
+                .body(getUserLoginAndPassword().toString())
+                .when().post("/api/signUp")
+                .then()
+                .statusCode(200)
+                .body(Matchers.is("Registration is success"));
+    }
+
+    @Test
+    @Order(1)
+    public void login() throws JSONException {
+
+
+        RestAssured.given()
+                .port(randomServerPort)
+                .body(getUserLoginAndPassword().toString())
+                .contentType(ContentType.JSON)
+                .when().post("/api/login")
+                .then()
+                .statusCode(200)
+                .body(Matchers.is("Login is success"));
     }
 
     @Test
