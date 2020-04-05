@@ -13,6 +13,7 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
 
     public static final String USER_PARAM = "user";
 
+
     @Value("${application.authorization.enabled}")
     private Boolean authorizationEnabled;
 
@@ -25,7 +26,8 @@ public class AuthorizationInterceptor implements HandlerInterceptor {
         if (Boolean.TRUE.equals(authorizationEnabled)
                 && request.getSession().getAttribute(USER_PARAM) == null
                 && !request.getRequestURI().equals(authorizationRedirect)
-                && !request.getRequestURI().equals(Controller.API_PREFIX + Controller.LOGIN))
+                && !request.getRequestURI().equals(Controller.API_PREFIX + AuthController.LOGIN)
+                && !request.getRequestURI().equals(Controller.API_PREFIX + AuthController.SIGNUP))
         {
             if (request.getRequestURI().startsWith(Controller.API_PREFIX)) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

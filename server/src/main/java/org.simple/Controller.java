@@ -7,17 +7,13 @@ import org.simple.entity.ToDoItem.ToDoItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(Controller.API_PREFIX)
 public class Controller {
 
     public static final String API_PREFIX = "/api";
-    public static final String LOGIN = "/login";
 
     @Autowired
     private ToDoItemRepository toDoItemRepository;
@@ -36,7 +32,7 @@ public class Controller {
     }
 
     @RequestMapping("/list-group")
-    public List<ToDoGroup> listGroup(){
+    public List<ToDoGroup> listGroup() {
         return toDoGroupRepository.findAllByOrderById();
     }
 
@@ -51,23 +47,12 @@ public class Controller {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.PATCH)
-    public ToDoItem edit(@RequestBody ToDoItem toDoItem){
+    public ToDoItem edit(@RequestBody ToDoItem toDoItem) {
         return toDoItemRepository.save(toDoItem);
     }
 
     @RequestMapping("/hello")
     public String hello() {
         return "hello";
-    }
-
-    @RequestMapping(LOGIN)
-    public void getLogin(@RequestBody(required = false) Map<String, String> parameters,
-                         HttpServletRequest request, HttpServletResponse response) {
-        Object userName = request.getSession().getAttribute(AuthorizationInterceptor.USER_PARAM);
-        if (userName == null) {
-            request.getSession().setAttribute(AuthorizationInterceptor.USER_PARAM, "user");
-        }
-
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 }
