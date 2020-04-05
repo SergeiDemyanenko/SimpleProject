@@ -19,6 +19,7 @@ import org.simple.entity.ToDoGroup.ToDoGroupRepository;
 import org.simple.entity.ToDoItem.ToDoItem;
 import org.simple.entity.ToDoItem.ToDoItemRepository;
 import org.simple.utils.RunServer;
+import org.simple.utils.TokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -39,6 +40,9 @@ public class ApiTest {
     private ToDoGroupRepository toDoGroupRepository;
 
     private static long testId;
+
+    @Autowired
+    private TokenUtil tokenUtil;
 
     @LocalServerPort
     private int randomServerPort;
@@ -97,7 +101,7 @@ public class ApiTest {
     public void login() throws JSONException {
 
 
-        RestAssured.given()
+        String token = RestAssured.given()
                 .port(randomServerPort)
                 .body(getUserLoginAndPassword().toString())
                 .contentType(ContentType.JSON)
@@ -105,13 +109,21 @@ public class ApiTest {
                 .then()
                 .statusCode(200)
                 .body("message", Matchers.equalTo("Login is success"),
-                        "success", Matchers.equalTo(true));
+                        "success", Matchers.equalTo(true))
+                .extract().path("token");
+
+        tokenUtil.setToken(token);
     }
 
     @Test
     @Order(1)
     public void helloTest() throws IOException {
-        assertEquals("hello", getResponse("/api/hello"));
+        RestAssured.given()
+                .header("Authorization", tokenUtil.getToken())
+                .when().get("/api/hello")
+                .then()
+                .statusCode(200)
+                .body(Matchers.equalTo("hello"));
     }
 
     @Test
@@ -136,6 +148,7 @@ public class ApiTest {
         requestParams.put("text", TEST_VALUE);
 
         RestAssured.given()
+                .header("Authorization", tokenUtil.getToken())
                 .port(randomServerPort)
                 .contentType(ContentType.JSON)
                 .body(requestParams.toString())
@@ -155,6 +168,7 @@ public class ApiTest {
         requestParams.put("id", testId);
 
         RestAssured.given()
+                .header("Authorization", tokenUtil.getToken())
                 .port(randomServerPort)
                 .body(requestParams.toString())
                 .delete("api/delete");
@@ -197,6 +211,7 @@ public class ApiTest {
         System.out.println(requestParams.toString());
 
         RestAssured.given()
+                .header("Authorization", tokenUtil.getToken())
                 .port(randomServerPort)
                 .contentType(ContentType.JSON)
                 .body(requestParams.toString())
