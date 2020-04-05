@@ -88,7 +88,8 @@ public class ApiTest {
                 .when().post("/api/signUp")
                 .then()
                 .statusCode(200)
-                .body(Matchers.is("Registration is success"));
+                .body("message", Matchers.equalTo("Registration is success"),
+                        "success", Matchers.equalTo(true));
     }
 
     @Test
@@ -103,7 +104,8 @@ public class ApiTest {
                 .when().post("/api/login")
                 .then()
                 .statusCode(200)
-                .body(Matchers.is("Login is success"));
+                .body("message", Matchers.equalTo("Login is success"),
+                        "success", Matchers.equalTo(true));
     }
 
     @Test
