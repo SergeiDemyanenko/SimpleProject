@@ -48,7 +48,7 @@ public class ItemReview extends AppCompatActivity {
                 ToDOAdapter.taskList.set(itemId, textOfEditItem);
                 //          adapter.add(textOfNewItem);
                 textView.setText(textOfEditItem);
-                ToDOAdapter.adapter.notifyDataSetChanged();
+                MainActivity.toDOAdapter.getAdapter().notifyDataSetChanged();
             } catch (NullPointerException e) {
             }
         } else {
@@ -60,7 +60,7 @@ public class ItemReview extends AppCompatActivity {
     public void deleteItem(View view) {
 
         ToDOAdapter.taskList.remove(itemId);
-        ToDOAdapter.adapter.notifyDataSetChanged();
+        MainActivity.toDOAdapter.getAdapter().notifyDataSetChanged();
         finish();
 
     }
