@@ -20,13 +20,13 @@ public class TextEditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_text_editor);
         editText = (EditText) findViewById(R.id.text_input);
 
-         try {
+        try {
             String currentTextOfItem = getIntent().getExtras().get(MainActivity.EDIT_TEXT).toString();
             if (!currentTextOfItem.isEmpty()) {
-            editText.setText(currentTextOfItem);
+                editText.setText(currentTextOfItem);
+            }
+        } catch (NullPointerException e) {
         }
-        } catch (NullPointerException e)
-        {}
 
     }
 
@@ -44,7 +44,7 @@ public class TextEditorActivity extends AppCompatActivity {
 
 
     @Override
-     public void onBackPressed() {
+    public void onBackPressed() {
         finish();
     }
 }
