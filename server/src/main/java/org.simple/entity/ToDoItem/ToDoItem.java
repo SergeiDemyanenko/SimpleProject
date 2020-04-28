@@ -3,7 +3,7 @@ package org.simple.entity.ToDoItem;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.simple.entity.ToDoGroup.ToDoGroup;
-import org.simple.entity.User.User;
+import org.simple.entity.User.UserEntity;
 
 import javax.persistence.*;
 
@@ -26,7 +26,7 @@ public class ToDoItem {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User user;
+    private UserEntity userEntity;
 
     public ToDoItem() {}
 

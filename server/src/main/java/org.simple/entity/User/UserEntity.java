@@ -7,7 +7,7 @@ import javax.persistence.*;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 @Entity
 @Table(name = "users")
-public class User {
+public class UserEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,12 +17,12 @@ public class User {
 
     private String password;
 
-    public User(String login, String password) {
+    public UserEntity(String login, String password) {
         this.login = login;
         this.password = password;
     }
 
-    public User() {
+    public UserEntity() {
     }
 
     public Long getId() {
