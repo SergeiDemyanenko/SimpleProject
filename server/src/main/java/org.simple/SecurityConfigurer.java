@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
@@ -46,14 +47,17 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
         if (Boolean.TRUE.equals(authorizationEnabled))
          {
-             http.authorizeRequests()
-                     .antMatchers(AuthController.LOGIN).permitAll()
-                     .antMatchers(AuthController.SIGNUP).permitAll()
-                     .antMatchers("/resources/**").permitAll()
-                     .antMatchers("/*.js").permitAll()
+             http.csrf().disable().authorizeRequests()
+                     .antMatchers(
+                             Controller.API_PREFIX + AuthController.LOGIN,
+                             Controller.API_PREFIX + AuthController.SIGNUP,
+                             "/resources/**",
+                             "/*.js",
+                             "/api/hello").permitAll()
                      .anyRequest().authenticated()
                      .and()
-                     .formLogin().loginPage(authorizationRedirect);
+                     .formLogin().loginPage("/api/hello");
+             http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
          }
     }
     @Bean
