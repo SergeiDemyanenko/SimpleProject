@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import com.example.myapplication102.R;
 
+import static com.example.toDoAndroidClient.MainActivity.toDOAdapter;
+
 public class ItemReview extends AppCompatActivity {
 
     private String itemText;
@@ -45,10 +47,9 @@ public class ItemReview extends AppCompatActivity {
 
             try {
                 String textOfEditItem = data.getStringExtra(MainActivity.NEW_ITEM_TEXT);
-                MainActivity.taskList.set(itemId, textOfEditItem);
-                //          adapter.add(textOfNewItem);
+                toDOAdapter.editItem(itemId, textOfEditItem);
                 textView.setText(textOfEditItem);
-                MainActivity.adapter.notifyDataSetChanged();
+                toDOAdapter.getAdapter().notifyDataSetChanged();
             } catch (NullPointerException e) {
             }
         } else {
@@ -59,8 +60,8 @@ public class ItemReview extends AppCompatActivity {
 
     public void deleteItem(View view) {
 
-        MainActivity.taskList.remove(itemId);
-        MainActivity.adapter.notifyDataSetChanged();
+        toDOAdapter.removeItem(itemId);
+        toDOAdapter.getAdapter().notifyDataSetChanged();
         finish();
 
     }
