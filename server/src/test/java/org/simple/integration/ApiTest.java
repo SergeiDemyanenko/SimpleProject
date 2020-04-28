@@ -119,6 +119,7 @@ public class ApiTest {
     @Order(1)
     public void helloTest() throws IOException {
         RestAssured.given()
+                .port(randomServerPort)
                 .header("Authorization", tokenUtil.getToken())
                 .when().get("/api/hello")
                 .then()
