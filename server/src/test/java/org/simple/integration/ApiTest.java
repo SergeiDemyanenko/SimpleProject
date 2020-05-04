@@ -64,6 +64,7 @@ public class ApiTest {
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(String.format("http://localhost:%d%s", randomServerPort, uri));
+            request.addHeader("Authorization", tokenUtil.getToken());
             try (CloseableHttpResponse response = httpClient.execute(request)) {
                 assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
 
