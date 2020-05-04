@@ -14,7 +14,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.simple.entity.ToDoGroup.ToDoGroup;
 import org.simple.entity.ToDoGroup.ToDoGroupRepository;
 import org.simple.entity.ToDoItem.ToDoItem;
 import org.simple.entity.ToDoItem.ToDoItemRepository;
@@ -223,5 +227,76 @@ public class ApiTest {
         ToDoItem editedToDoItem = toDoItemRepository.findById(testId).get();
 
         assertEquals(TEST_VALUE, editedToDoItem.getText());
+    }
+
+    @Test
+    @Order(7)
+    public void addGroupTest() throws JSONException {
+        final String TEST_VALUE = getClass().getName() + "_addGroupTest";
+
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("groupName", TEST_VALUE);
+
+        RestAssured.given()
+                .header("Authorization", tokenUtil.getToken())
+                .port(randomServerPort)
+                .contentType(ContentType.JSON)
+                .body(requestParams.toString())
+                .when().post("api/addGroup")
+                .then()
+                .statusCode(200)
+                .body("groupName", Matchers.equalTo(TEST_VALUE))
+                .body("id", Matchers.notNullValue())
+                .body("toDoItems", Matchers.nullValue());
+    }
+
+    @Test
+    @Order(8)
+    public void editGroupTest() throws IOException, JSONException {
+        final String TEST_VALUE = getClass().getName() + "_editGroupTest";
+
+        String testToDoGroupsString = getResponse("/api/list-group");
+        JSONArray testToDoGroupsJSON = new JSONArray(testToDoGroupsString);
+        JSONObject firstItem = testToDoGroupsJSON.getJSONObject(0);
+        testId = firstItem.getInt("id");
+
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("id", testId);
+        requestParams.put("groupName", TEST_VALUE);
+
+        RestAssured.given()
+                .header("Authorization", tokenUtil.getToken())
+                .port(randomServerPort)
+                .contentType(ContentType.JSON)
+                .body(requestParams.toString())
+                .when().patch("api/editGroup")
+                .then()
+                .statusCode(200);
+
+        ToDoGroup editedToDoGroup = toDoGroupRepository.findById(testId);
+
+        assertEquals(editedToDoGroup.getId(), testId);
+        assertEquals(editedToDoGroup.getGroupName(), TEST_VALUE);
+    }
+
+    @Test
+    @Order(9)
+    public void deleteGroupTest() throws JSONException, IOException {
+
+        String testToDoGroupsString = getResponse("/api/list-group");
+        JSONArray testToDoGroupsJSON = new JSONArray(testToDoGroupsString);
+        JSONObject firstItem = testToDoGroupsJSON.getJSONObject(0);
+        testId = firstItem.getInt("id");
+
+        RestAssured.given()
+                .header("Authorization", tokenUtil.getToken())
+                .port(randomServerPort)
+                .when().delete(String.format("api/deleteGroup?id=%d", testId))
+                .then()
+                .statusCode(200);
+
+        ToDoGroup deletedGroup = toDoGroupRepository.findById(testId);
+
+        assertNull("TodoGroup wasn`t delete", deletedGroup);
     }
 }
