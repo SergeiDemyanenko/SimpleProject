@@ -3,7 +3,7 @@ package org.simple.Helpers;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.simple.entity.User.UserEntity;
+import org.simple.entity.User.UserAut;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -37,9 +37,9 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserEntity userEntity) {
+    public String generateToken(UserAut userAut) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userEntity.getLogin());
+        return createToken(claims, userAut.getLogin());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {

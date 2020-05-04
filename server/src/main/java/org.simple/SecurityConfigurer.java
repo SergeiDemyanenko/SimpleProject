@@ -40,23 +40,22 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         if (Boolean.FALSE.equals(authorizationEnabled)) {
-            http.csrf().disable()
-                    .authorizeRequests().antMatchers("/**").permitAll()
-                    .anyRequest().authenticated();
-        }
+            http.csrf()
+                    .ignoringAntMatchers("/**")
+                    .ignoringAntMatchers("/h2/**");
+            http.headers().frameOptions().disable();
 
-        if (Boolean.TRUE.equals(authorizationEnabled))
-         {
+        } else {
              http.csrf().disable().authorizeRequests()
                      .antMatchers(
                              Controller.API_PREFIX + AuthController.LOGIN,
                              Controller.API_PREFIX + AuthController.SIGNUP,
-                             "/resources/**",
-                             "/*.js",
-                             "/api/hello").permitAll()
+                             AuthController.LOGIN,
+                             AuthController.SIGNUP)
+                     .permitAll()
                      .anyRequest().authenticated()
                      .and()
-                     .formLogin().loginPage("/api/hello");
+                     .formLogin().loginPage(authorizationRedirect);
              http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
          }
     }

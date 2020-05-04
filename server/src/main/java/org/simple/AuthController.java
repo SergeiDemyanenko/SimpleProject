@@ -2,6 +2,7 @@ package org.simple;
 
 import org.simple.Helpers.JwtUtil;
 import org.simple.Helpers.SimpleResponse;
+import org.simple.entity.User.UserAut;
 import org.simple.entity.User.UserEntity;
 import org.simple.entity.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,12 @@ public class AuthController {
     JwtUtil jwtUtil;
 
     @RequestMapping(value = LOGIN, method = RequestMethod.POST)
-    public SimpleResponse login(@RequestBody UserEntity userEntity) {
-        if (userRepository.findByLogin(userEntity.getLogin()).size() != 0) {
+    public SimpleResponse login(@RequestBody UserAut userAut) {
+        if (userRepository.findByLogin(userAut.getLogin()).size() != 0) {
             if (passwordEncoder.matches(
-                    userEntity.getPassword(), userRepository.findByLogin(userEntity.getLogin()).get(0).getPassword()))
+                    userAut.getPassword(), userRepository.findByLogin(userAut.getLogin()).get(0).getPassword()))
             {
-                token = jwtUtil.generateToken(userEntity);
+                token = jwtUtil.generateToken(userAut);
                 return new SimpleResponse("Login is success", true, token);
             } else {
                 return new SimpleResponse("Password is incorrect", false);
@@ -46,10 +47,10 @@ public class AuthController {
     }
 
     @RequestMapping(value = SIGNUP, method = RequestMethod.POST)
-    public SimpleResponse signUp(@RequestBody UserEntity userEntity) {
-        if (userRepository.findByLogin(userEntity.getLogin()).size() == 0) {
-            String encodedPassword = passwordEncoder.encode(userEntity.getPassword());
-            userRepository.save(new UserEntity(userEntity.getLogin(), encodedPassword));
+    public SimpleResponse signUp(@RequestBody UserAut userAut) {
+        if (userRepository.findByLogin(userAut.getLogin()).size() == 0) {
+            String encodedPassword = passwordEncoder.encode(userAut.getPassword());
+            userRepository.save(new UserEntity(userAut.getLogin(), encodedPassword));
             return new SimpleResponse("Registration is success", true);
         } else {
             return new SimpleResponse("User already exist", false);
