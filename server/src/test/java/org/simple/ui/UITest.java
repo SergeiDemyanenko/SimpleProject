@@ -89,12 +89,6 @@ public class UITest {
     }
 
     @Test
-    @Order(0)
-    public void login() {
-
-    }
-
-    @Test
     @Order(1)
     public void addTest() {
         final String TEST_VALUE = "test string";
