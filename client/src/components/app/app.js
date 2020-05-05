@@ -14,8 +14,12 @@ export default class App extends Component {
     items: []
   };
 
+  token = localStorage.getItem("token");
+
   componentDidMount() {
-    axios.get(`/api/list-obj`)
+    axios.get(`/api/list-obj`, {
+        headers: {'Authorization': this.token}
+    })
         .then(response => {
           const items = response.data.map((elem) => ({label: elem.text, id: elem.id}));
           this.setState({items});
@@ -101,7 +105,6 @@ export default class App extends Component {
     return (
       <div className="todo-app">
         <AppHeader />
-
         <TodoList
           items={ items }
           onDelete={this.onDelete}
