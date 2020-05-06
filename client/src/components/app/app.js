@@ -31,6 +31,8 @@ export default class App extends Component {
   onItemAdded = (label) => {
     axios.post(`/api/add`, {
         text: label
+    },{
+        headers: {'Authorization': this.token}
     })
         .then(response => {
           this.setState((state) => {
@@ -46,6 +48,8 @@ export default class App extends Component {
     axios.patch(`/api/edit`, {
         id: id,
         text: label
+    },{
+        headers: {'Authorization': this.token}
     })
         .then(response => {
           this.setState((state) => {
@@ -64,7 +68,9 @@ export default class App extends Component {
   };
 
   onDelete = (id) => {
-    axios.delete(`/api/delete?id=${id}`)
+    axios.delete(`/api/delete?id=${id}`,{
+        headers: {'Authorization': this.token}
+    })
         .then(response => {
           this.setState((state) => {
             const idx = state.items.findIndex((item) => item.id === id);
