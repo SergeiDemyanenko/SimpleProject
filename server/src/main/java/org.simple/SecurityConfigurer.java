@@ -19,6 +19,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
+    private static final String STATIC_PATH = "/static/**";
+
     @Value("${application.authorization.enabled}")
     private Boolean authorizationEnabled;
 
@@ -51,7 +53,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                              Controller.API_PREFIX + AuthController.LOGIN,
                              Controller.API_PREFIX + AuthController.SIGNUP,
                              AuthController.LOGIN,
-                             AuthController.SIGNUP)
+                             AuthController.SIGNUP,
+                             STATIC_PATH)
                      .permitAll()
                      .anyRequest().authenticated()
                      .and()

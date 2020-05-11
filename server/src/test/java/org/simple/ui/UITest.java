@@ -7,14 +7,7 @@ import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.Assert;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -33,7 +26,6 @@ import java.net.URL;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfAllElementsLocatedBy;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.springframework.test.util.AssertionErrors.assertNotNull;
@@ -63,7 +55,6 @@ public class UITest {
     private WebDriver driver;
     private WebDriverWait driverWait;
 
-    @BeforeEach
     private void setUp() throws MalformedURLException {
 
         if (remoteWebDriver) {
@@ -75,10 +66,6 @@ public class UITest {
         driverWait = new WebDriverWait(driver, 5);
     }
 
-    @AfterEach
-    private void setDown() {
-        driver.quit();
-    }
 
     protected WebDriver getDriver() {
         return driver;
@@ -96,12 +83,37 @@ public class UITest {
         }
     }
 
+    @AfterEach
+    private void setDown() {
+        driver.quit();
+    }
+
+    @BeforeEach
+    public void signUp() throws MalformedURLException {
+
+        setUp();
+        final String TEST_LOGIN = "TEST_LOGIN" + Math.random();
+        final String TEST_PASSWORD = "TEST_PASSWORD" ;
+
+        getDriver().get(getHost() + "signUp");
+
+        WebElement signUpButton = getDriverWait().until(presenceOfElementLocated((By.xpath("//button[@type='button']"))));
+        WebElement inputLogin = driver.findElement(By.xpath("//input[@type='text']"));
+        WebElement inputPassword = driver.findElement(By.xpath("//input[@type='password']"));
+
+        inputLogin.sendKeys(TEST_LOGIN);
+        inputPassword.sendKeys(TEST_PASSWORD);
+        signUpButton.click();
+
+        getDriverWait().until(presenceOfElementLocated(By.xpath("//input[@placeholder='What needs to be done?']")));
+
+        assertEquals(getHost(), driver.getCurrentUrl());
+    }
+
     @Test
     @Order(1)
     public void addTest() {
         final String TEST_VALUE = "test string";
-
-        getDriver().get(getHost());
 
         WebElement input = getDriverWait().until(presenceOfElementLocated(By.className("new-todo-label")));
         List<WebElement> labelList = getDriverWait().until(presenceOfAllElementsLocatedBy(By.className("todo-list-item-label")));
@@ -114,21 +126,21 @@ public class UITest {
 
     @Test
     @Order(2)
-    public void deleteTest() {
+    public void deleteTest() throws InterruptedException {
         MainPage mainPage = new MainPage(getDriver());
-
-        getDriver().get(getHost());
 
         int todoListSize = mainPage.getAllTodoItems().size();
         Assert.assertTrue("There are nothing to delete in the List", todoListSize > 0);
 
         mainPage.deleteLastTodo();
+        Thread.sleep(300);
+
         assertEquals(todoListSize - 1, mainPage.getAllTodoItems().size());
     }
 
     @Disabled
     @Test
-    public void editTest() {
+    public void editTest() throws InterruptedException {
         MainPage mainPage = new MainPage(driver);
 
         driver.get("http://localhost:3000/");
@@ -137,6 +149,7 @@ public class UITest {
         Assert.assertTrue("There are nothing to edit in the List", todoList.size() > 0);
 
         mainPage.editFirstTodo(todoList);
+
         assertEquals(mainPage.getFirstElement().getText(), mainPage.EDIT_VALUE);
     }
 }

@@ -14,8 +14,12 @@ export default class App extends Component {
     items: []
   };
 
+  token = localStorage.getItem("token");
+
   componentDidMount() {
-    axios.get(`/api/list-obj`)
+    axios.get(`/api/list-obj`, {
+        headers: {'Authorization': this.token}
+    })
         .then(response => {
           const items = response.data.map((elem) => ({label: elem.text, id: elem.id}));
           this.setState({items});
@@ -27,6 +31,8 @@ export default class App extends Component {
   onItemAdded = (label) => {
     axios.post(`/api/add`, {
         text: label
+    },{
+        headers: {'Authorization': this.token}
     })
         .then(response => {
           this.setState((state) => {
@@ -42,6 +48,8 @@ export default class App extends Component {
     axios.patch(`/api/edit`, {
         id: id,
         text: label
+    },{
+        headers: {'Authorization': this.token}
     })
         .then(response => {
           this.setState((state) => {
@@ -60,7 +68,9 @@ export default class App extends Component {
   };
 
   onDelete = (id) => {
-    axios.delete(`/api/delete?id=${id}`)
+    axios.delete(`/api/delete?id=${id}`,{
+        headers: {'Authorization': this.token}
+    })
         .then(response => {
           this.setState((state) => {
             const idx = state.items.findIndex((item) => item.id === id);
@@ -101,7 +111,6 @@ export default class App extends Component {
     return (
       <div className="todo-app">
         <AppHeader />
-
         <TodoList
           items={ items }
           onDelete={this.onDelete}
